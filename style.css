@@ -326,6 +326,7 @@ footer .line-footer p img{
     width: 12px;
     margin: 0 7px;
     margin-right: 20px;
+    justify-content: center;
 }
 footer .line-footer p a{
     color: #fff;
