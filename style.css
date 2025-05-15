@@ -92,6 +92,7 @@ header nav.menu-desktop ul li{
     cursor: pointer;
     margin: 0 5px;
     display: none;
+    position: fixed;
 }
 .btn-abrir-menu img{
     width: 25px;
