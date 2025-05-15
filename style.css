@@ -93,6 +93,8 @@ header nav.menu-desktop ul li{
     margin: 0 5px;
     display: none;
     position: fixed;
+    right: 10vw;
+    top: 5vh
 }
 .btn-abrir-menu img{
     width: 25px;
