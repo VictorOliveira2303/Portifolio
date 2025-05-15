@@ -1,0 +1,407 @@
+/*ESTILO GERAL*/
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Roboto", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: weight;
+    font-style: normal;
+    font-variation-settings:
+      "wdth" 100;
+}
+html {
+    scroll-behavior: smooth;
+}
+body{
+    background-color:rgba(0, 0, 0, 0.9);
+    height: 100vh;
+}
+.interface{
+    max-width: 1280px;
+    margin: 0 auto;
+}
+.flex{
+    display: flex;
+}
+.btn-contato button{
+    padding: 10px 40px;
+    font-size: 18px;
+    font-weight: 600;
+    background-color: #00b7ff;
+    border: 0;
+    border-radius: 30px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+.btn-contato button:hover{
+    box-shadow: 0px 0px 8px #00b7ff;
+    transform: scale(1.05);
+}
+button:hover{
+    box-shadow: 0px 0px 8px #00b7ff;
+    transform: scale(1.05);
+}
+h2.titulo{
+    color: #fff;
+    font-size: 38px;
+    text-align: center;
+}
+h2.titulo span{
+    color: rgb(0, 119, 255);
+    font-size: 38px;
+    text-align: center;
+}
+/*ESTILO CABEÇALHO*/
+header{
+    padding: 40px 4%;
+}
+header > .interface{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+header a{
+    color: #5c5c5c;
+    text-decoration: none;
+    display: inline-block;
+    transition: 0.2s;;
+}
+.logo img{
+    width: 65px;
+}
+header nav.menu-desktop a:hover{
+    color: #fff;
+    transform: scale(1.05);
+}
+header nav ul{
+    list-style-type: none;
+}
+header nav.menu-desktop ul li{
+    display: inline-block;
+    padding: 0 40px;
+}
+/* ESTILO MENU MOBILE */
+.btn-abrir-menu{
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    border: none;
+    background-color: #00b7ff;
+    font-size: 22px;
+    cursor: pointer;
+    margin: 0 5px;
+    display: none;
+}
+.btn-abrir-menu img{
+    width: 25px;
+}
+.menu-mobile{
+    background-color: #292929;
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    right: 0;
+    z-index: 99999;
+    width: 0%;
+    overflow: hidden;
+    transition: 0.5s;
+}
+.menu-mobile.abrir-menu{
+    width: 70%;
+}
+.menu-mobile.abrir-menu ~ .overlay-menu{
+    display: block;
+}
+.menu-mobile .btn-fechar{
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    border: none;
+    background-color: #00b7ff;
+    font-size: 30px;
+    margin: 0 5px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+.menu-mobile .btn-fechar img{
+    width: 25px;
+    margin: 0 10px;
+    margin-right: 20px;
+    font-size: 30px;
+}
+.menu-mobile nav ul{
+    text-align: right;
+}
+.menu-mobile nav ul li a{
+    color: #fff;
+    font-size: 20px;
+    font-weight: 300;
+    padding: 20px 8%;
+    display: block;
+    cursor: pointer;
+}
+.menu-mobile nav ul li a:hover{
+    background-color: #0013a3;
+}
+.overlay-menu{
+    background-color: #000000df;
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 88888;
+    display: none;
+    cursor: pointer;
+}
+/* ESTILO DO TOPO DO SITE */
+section.topo-site{
+    padding: 40px 4%;
+}
+section.topo-site.flex{
+    gap: 40px;
+}
+.topo-site h1{
+    color: #fff;
+    font-size: 42px;
+    line-height: 40px;
+}
+.topo-site .txt-site h1 span{
+    color: rgb(0, 119, 255);
+    font-size: 84px;
+}
+.topo-site .txt-site p{
+    color: #fff;
+    margin: 40px 0px;
+    text-align: justify;
+}
+.img-site img{
+    position: relative;
+    width: 450px;
+    animation: flutuabilidade 2s ease-in-out infinite alternate;
+    box-shadow: 0px 0px 15px #0013a3;
+    border-radius: 800px;
+}
+@keyframes flutuabilidade{
+    0%{
+        top: 0;
+    }
+    100%{
+        top: 30px;
+    }
+}
+/* ESTILO DO SOBRE */
+section.sobre{
+    padding: 80px 4%;
+}
+section.sobre .flex{
+    align-items: center;
+    gap: 60px;
+}
+.sobre .img-sobre img{
+    width: 450px;
+    border-radius: 5%;
+}
+.sobre .txt-sobre{
+    color: #fff;
+}
+.sobre .txt-sobre h2{
+    font-size: 40px;
+    line-height: 40px;
+    margin-bottom: 30px;
+}
+.sobre .txt-sobre h2 span{
+    font-size: 40px;
+    color: rgb(0, 119, 255);
+    display: block;
+}
+.sobre .txt-sobre p{
+    margin: 20px 0;
+    text-align: justify;
+}
+.btn-social button{
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    border: none;
+    background-color: #00b7ff;
+    font-size: 22px;
+    cursor: pointer;
+    margin: 0 5px;
+    transition: 0.2s;
+}
+.btn-social button img{
+    width: 20px;
+}
+/*ESTILO HABILIDADES E EXPERIÊNCIA*/
+section.habilidades-experiencia{
+    padding: 40px 4%;
+}
+section.habilidades-experiencia .flex{
+    gap: 60px;
+}
+.habilidades-experiencia .habilidades-experiencia-box{
+    color: #fff;
+    padding: 40px;
+    margin-top: 45px;
+    border-radius: 20px;
+    transition: 0.2s;
+}
+.habilidades-experiencia .habilidades-experiencia-box:hover{
+    transform: scale(1.05);
+    box-shadow: 0 0 8px #ffffff78;
+}
+.habilidades-experiencia .habilidades-experiencia-box img{
+    width: 150px;
+}
+.habilidades-experiencia .habilidades-experiencia-box h3{
+    font-size: 30px;
+    margin: 15px 0;
+}
+/* ESTILO PROJETOS */
+section.projetos{
+    padding: 80px 4%;
+    box-shadow: 0 0 40px 10px #ffffff1d;
+}
+section.projetos .flex{
+    gap: 20px;
+    flex-wrap: wrap;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 60px;
+}
+.img-port{
+    width: 360px;
+    height: 460px;
+    background-size: cover;
+    background-position: 100% 0%;
+    color: #fff;
+    border-radius: 20px;
+    transition: 0.2s;
+    margin-top: 60px;
+}
+.img-port:hover{
+    transform: scale(1.05);
+    box-shadow: 0 0 10px #ffffff78;
+}
+.img-port img{
+    width: 360px;
+    height: 460px;
+    background-size: cover;
+    background-position: 100% 0%;
+    border-radius: 15px;
+}
+/* ESTILO RODAPÉ */
+footer{
+    padding: 60px 4%;
+    box-shadow: 0 0 40px 10px #ffffff1d;
+}
+footer .flex{
+    justify-content: space-between;
+}
+footer .line-footer{
+    padding: 20px 0;
+}
+.logo-footer img{
+    width: 65px;
+}
+.line-footer2{
+    border-top: 2px solid rgb(0, 119, 255);
+}
+footer .line-footer p{
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    border: none;
+    background-color: #00b7ff;
+    font-size: 22px;
+    margin: 0 5px;
+    display: flex;
+    align-items: center;
+}
+footer .line-footer p img{
+    width: 12px;
+    margin: 0 7px;
+    margin-right: 20px;
+}
+footer .line-footer p a{
+    color: #fff;
+    text-decoration: none;
+    cursor: pointer;
+}
+@media screen and (max-width: 1020px){
+    /* CLASSES GERAIS */
+    .flex{
+        flex-direction: column;
+    }
+    h2.titulo{
+        font-size: 34px;
+        line-height: 30px;
+    }
+    /* CABEÇALHO */
+    .menu-desktop{
+        display: none;
+    }
+
+    .btn-abrir-menu{
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    /* TOPO DO SITE */
+    section.topo-site{
+        padding: 20px 8%;
+    }
+    .topo-site .flex{
+        flex-direction: column-reverse;
+    }
+    .topo-site h1{
+        font-size: 30px;
+    }
+    .topo-site .img-site img{
+        width: 100%;
+    }
+    /* HABILIDADES E EXPERIÊNCIA */
+    section.habilidades-experiencia{
+        padding: 40px 8%;
+    }
+    /* SOBRE */
+    section.sobre{
+        padding: 80px 8%;
+    }
+    .sobre .txt-sobre h2{
+        font-size: 34px;
+        line-height: 35px;
+        text-align: center;
+    }
+    .btn-social{
+        text-align: center;
+    }
+    .img-sobre img{
+        width: 100%;
+    }
+    /* PROJETOS */
+    .section.projeto{
+        padding: 80px 8%;
+    }
+    .img-projeto{
+        width: 100%;
+        max-width: 360px;
+        margin: 0 auto;
+    }
+    section.projeto .flex{
+        gap: 60px;
+    }
+    /* RODAPÉ */
+    footer .flex{
+        flex-direction: column;
+        gap: 30px;
+    }
+    footer .line-footer{
+        text-align: center;
+    }
+}
