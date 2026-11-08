@@ -3,11 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
     <link rel="shortcut icon" href="assets/img/Icon.jpg" type="image/x-icon">
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js" defer></script>
     <script src="main.js" defer></script>
     <title>Portfólio</title>
 </head>
@@ -27,13 +26,16 @@
                     <li><a href="#contato">Contato</a></li>
                 </ul>
             </nav>
-            <button class="btn-abrir-menu" id="btn-menu" aria-label="Abrir menu">
+            <button class="btn-abrir-menu" id="btn-menu" aria-label="Abrir menu" aria-expanded="false" aria-controls="menu-mobile">
                 <img src="assets/img/list.svg" alt="">
             </button>
-            <div class="menu-mobile" id="menu-mobile">
-            <button class="btn-fechar" id="close" aria-label="Fechar menu">
-                <img src="assets/img/x-lg.svg" alt="">
-            </button>
+            <div class="menu-mobile" id="menu-mobile" aria-label="Menu principal">
+                <div class="menu-mobile-topo">
+                    <span class="menu-mobile-titulo">Victor Oliveira</span>
+                    <button class="btn-fechar" id="close" aria-label="Fechar menu">
+                        <img src="assets/img/x-lg.svg" alt="">
+                    </button>
+                </div>
                 <nav>
                     <ul id="list">
                         <li><a href="#sobre">Sobre</a></li>
@@ -52,6 +54,8 @@
         <div class="sobre-conteudo">
             <img src="assets/img/perfilFormal.jpg" alt="Foto de Victor Oliveira" />
             <div class="sobre-texto">
+            <h1>Victor Oliveira</h1>
+            <p class="subtitulo">Estudante de Ciência da Computação</p>
             <p>
                 Olá, sou Victor Oliveira, estudante do 2º período de Ciência da
                 Computação na Universidade Tiradentes (Unit), em Aracaju, Sergipe.
@@ -75,80 +79,85 @@
         </section>
         <section id="projetos">
             <h2>Portfólio</h2>
-            <div class="projetos-lista">
-                <article class="card-projeto">
-                    <a href="https://victoroliveira2303.github.io/appPrevisao/" target="_blank" rel="noopener noreferrer">
-                        <img src="assets/img/PrevisaoTempo.png" alt="Tela do projeto Previsão do Tempo" />
-                    </a>
-                    <h3>Previsão do Tempo</h3>
-                    <p>Digite uma cidade e veja as condições do clima, usando uma API de previsão do tempo.</p>
-                    <ul class="tecnologias">
-                        <li>HTML</li>
-                        <li>CSS</li>
-                        <li>JavaScript</li>
-                        <li>API</li>
-                    </ul>
-                </article>
-                <article class="card-projeto">
-                    <a href="https://victoroliveira2303.github.io/buscaCep/" target="_blank" rel="noopener noreferrer">
-                        <img src="assets/img/BuscaCep.png" alt="Tela do projeto Busca CEP" />
-                    </a>
-                    <h3>Busca CEP</h3>
-                    <p>Digite um CEP e receba as informações do endereço, consultando uma API de CEP.</p>
-                    <ul class="tecnologias">
-                        <li>HTML</li>
-                        <li>CSS</li>
-                        <li>JavaScript</li>
-                        <li>API</li>
-                    </ul>
-                </article>
-                <article class="card-projeto">
-                    <a href="https://victoroliveira2303.github.io/musica/" target="_blank" rel="noopener noreferrer">
-                        <img src="assets/img/LetraMusica.png" alt="Tela do projeto Letra de Música" />
-                    </a>
-                    <h3>Letra de Música</h3>
-                    <p>Informe o cantor e o nome da música para ver a letra, usando uma API de músicas.</p>
-                    <ul class="tecnologias">
-                        <li>HTML</li>
-                        <li>CSS</li>
-                        <li>JavaScript</li>
-                        <li>API</li>
-                    </ul>
-                </article>
-                <article class="card-projeto">
-                    <a href="https://victoroliveira2303.github.io/Forms/" target="_blank" rel="noopener noreferrer">
-                        <img src="assets/img/FormularioInscricao.png" alt="Tela do projeto Formulário de Inscrição" />
-                    </a>
-                    <h3>Formulário de Inscrição</h3>
-                    <p>Simulador de formulário de inscrição com campos de cadastro.</p>
-                    <ul class="tecnologias">
-                        <li>HTML</li>
-                        <li>CSS</li>
-                        <li>JavaScript</li>
-                    </ul>
-                </article>
-                <article class="card-projeto">
-                    <a href="https://victoroliveira2303.github.io/toDo/" target="_blank" rel="noopener noreferrer">
-                        <img src="assets/img/ListaTarefas.png" alt="Tela do projeto Lista de Tarefas" />
-                    </a>
-                    <h3>Lista de Tarefas</h3>
-                    <p>Lista de tarefas (ToDo) para adicionar e remover itens.</p>
-                    <ul class="tecnologias">
-                        <li>HTML</li>
-                        <li>CSS</li>
-                        <li>JavaScript</li>
-                    </ul>
-                </article>
-                <article class="card-projeto">
-                    <h3>Calcular Média</h3>
-                    <p>Aplicativo para Windows que calcula a média de 3 notas.</p>
-                    <ul class="tecnologias">
-                        <li>C#</li>
-                        <li>Windows Forms</li>
-                    </ul>
-                    <a href="assets/apps/CalcularMedia.exe" download>Baixar o aplicativo (.exe)</a>
-                    <p class="aviso">O navegador pode exibir um aviso ao baixar o executável.</p>
-                </article>
+            <div class="carrossel">
+                <button class="carrossel-btn" id="proj-anterior" aria-label="Projeto anterior">&#8249;</button>
+                    <div class="projetos-lista" id="projetos-lista" role="region" aria-label="Lista de projetos" tabindex="0">
+                        <article class="card-projeto">
+                            <a href="https://victoroliveira2303.github.io/appPrevisao/" target="_blank" rel="noopener noreferrer">
+                                <img src="assets/img/PrevisaoTempo.png" alt="Tela do projeto Previsão do Tempo" />
+                            </a>
+                            <h3>Previsão do Tempo</h3>
+                            <p>Digite uma cidade e veja as condições do clima, usando uma API de previsão do tempo.</p>
+                            <ul class="tecnologias">
+                                <li>HTML</li>
+                                <li>CSS</li>
+                                <li>JavaScript</li>
+                                <li>API</li>
+                            </ul>
+                        </article>
+                        <article class="card-projeto">
+                            <a href="https://victoroliveira2303.github.io/buscaCep/" target="_blank" rel="noopener noreferrer">
+                                <img src="assets/img/BuscaCep.png" alt="Tela do projeto Busca CEP" />
+                            </a>
+                            <h3>Busca CEP</h3>
+                            <p>Digite um CEP e receba as informações do endereço, consultando uma API de CEP.</p>
+                            <ul class="tecnologias">
+                                <li>HTML</li>
+                                <li>CSS</li>
+                                <li>JavaScript</li>
+                                <li>API</li>
+                            </ul>
+                        </article>
+                        <article class="card-projeto">
+                            <a href="https://victoroliveira2303.github.io/musica/" target="_blank" rel="noopener noreferrer">
+                                <img src="assets/img/LetraMusica.png" alt="Tela do projeto Letra de Música" />
+                            </a>
+                            <h3>Letra de Música</h3>
+                            <p>Informe o cantor e o nome da música para ver a letra, usando uma API de músicas.</p>
+                            <ul class="tecnologias">
+                                <li>HTML</li>
+                                <li>CSS</li>
+                                <li>JavaScript</li>
+                                <li>API</li>
+                            </ul>
+                        </article>
+                        <article class="card-projeto">
+                            <a href="https://victoroliveira2303.github.io/Forms/" target="_blank" rel="noopener noreferrer">
+                                <img src="assets/img/FormularioInscricao.png" alt="Tela do projeto Formulário de Inscrição" />
+                            </a>
+                            <h3>Formulário de Inscrição</h3>
+                            <p>Simulador de formulário de inscrição com campos de cadastro.</p>
+                            <ul class="tecnologias">
+                                <li>HTML</li>
+                                <li>CSS</li>
+                                <li>JavaScript</li>
+                            </ul>
+                        </article>
+                        <article class="card-projeto">
+                            <a href="https://victoroliveira2303.github.io/toDo/" target="_blank" rel="noopener noreferrer">
+                                <img src="assets/img/ListaTarefas.png" alt="Tela do projeto Lista de Tarefas" />
+                            </a>
+                            <h3>Lista de Tarefas</h3>
+                            <p>Lista de tarefas (ToDo) para adicionar e remover itens.</p>
+                            <ul class="tecnologias">
+                                <li>HTML</li>
+                                <li>CSS</li>
+                                <li>JavaScript</li>
+                            </ul>
+                        </article>
+                        <article class="card-projeto">
+                            <img src="assets/img/CalcMedia.png" alt="Tela do projeto Calcular Média" />
+                            <h3>Calcular Média</h3>
+                            <p>Aplicativo para Windows que calcula a média de 3 notas.</p>
+                            <ul class="tecnologias">
+                                <li>C#</li>
+                                <li>Windows Forms</li>
+                            </ul>
+                            <a href="assets/apps/CalcularMedia.exe" download>Baixar o aplicativo (.exe)</a>
+                            <p class="aviso">O navegador pode exibir um aviso ao baixar o executável.</p>
+                        </article>
+                    </div>
+                <button class="carrossel-btn" id="proj-proximo" aria-label="Próximo projeto">&#8250;</button>
             </div>
         </section>
         <section id="skills">
@@ -205,8 +214,31 @@
         </section>
         <section id="contato">
             <h2>Contato</h2>
-            <p>Aracaju, Sergipe</p>
-            <!-- O formulário entra na segunda -->
+            <div class="contato-conteudo">
+                <form class="contato-form" id="form-contato" novalidate>
+                    <div class="campo">
+                        <label for="nome">Nome</label>
+                        <input type="text" id="nome" name="nome" autocomplete="name" required aria-describedby="erro-nome">
+                        <span class="erro" id="erro-nome" role="alert"></span>
+                    </div>
+                    <div class="campo">
+                        <label for="email">E-mail</label>
+                        <input type="email" id="email" name="email" autocomplete="email" required aria-describedby="erro-email">
+                        <span class="erro" id="erro-email" role="alert"></span>
+                    </div>
+                    <div class="campo">
+                        <label for="mensagem">Mensagem</label>
+                        <textarea id="mensagem" name="mensagem" required aria-describedby="erro-mensagem"></textarea>
+                        <span class="erro" id="erro-mensagem" role="alert"></span>
+                    </div>
+
+                    <!-- Armadilha para robôs: pessoas não veem nem preenchem este campo -->
+                    <input type="text" name="site" class="campo-oculto" tabindex="-1" autocomplete="off" aria-hidden="true">
+
+                    <button type="submit" class="btn-enviar">Enviar mensagem</button>
+                    <p class="status-form" id="status-form" role="status"></p>
+                </form>
+            </div>
         </section>
     </main>
     <footer>
@@ -236,7 +268,8 @@
                 </div>
             </div>
             <div class="line-footer2">
-                <p><img src="assets/img/envelope-fill.svg" alt=""><a href="mailto:victorqpr121021@gmail.com">victorqpr121021@gmail.com</a></p>
+                <p><img src="assets/img/envelope-fill.svg" alt=""><a href="mailto:victor.oliveira23.dev@gmail.com">victor.oliveira23.dev@gmail.com</a></p>
+                <p class="copyright">Victor Oliveira © 2026. Todos os direitos reservados.</p>
             </div>
         </div>
     </footer>
