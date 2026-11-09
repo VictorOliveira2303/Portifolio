@@ -238,6 +238,14 @@ const REGRAS = {
     },
 };
 
+const camposMensagem = document.querySelectorAll("textarea");
+camposMensagem.forEach(campo => {
+    campo.addEventListener('input', () => {
+        campo.style.height = 'auto';
+        campo.style.height = campo.scrollHeight + 'px';
+    });
+});
+
 const formulario = document.getElementById('form-contato');
 const statusDoFormulario = document.getElementById('status-form');
 const botaoEnviar = formulario.querySelector('.btn-enviar');
