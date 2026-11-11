@@ -3,12 +3,36 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta name="description" content="Conheça o portfólio de Victor Oliveira, estudante de Ciência da Computação e desenvolvedor em formação. Confira projetos, habilidades e experiências em desenvolvimento web.">
+
+    <meta name="author" content="Victor Oliveira">
+    <meta name="robots" content="index, follow">
+
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Victor Oliveira | Portfólio">
+    <meta property="og:description" content="Conheça meus projetos, habilidades e minha evolução em desenvolvimento de software.">
+    <meta property="og:url" content="https://victoroliveira2303.github.io/Portifolio/">
+    <meta property="og:image" content="https://victoroliveira2303.github.io/Portifolio/assets/img/Perfil/perfilFormal.jpg">
+    <meta property="og:locale" content="pt_BR">
+
+    <meta name="theme-color" content="#000000">
+
+    <link rel="canonical" href="https://victoroliveira2303.github.io/Portifolio/">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+
     <link rel="stylesheet" href="style.css">
+
     <link rel="shortcut icon" href="assets/img/Perfil/Icon.jpg" type="image/x-icon">
+
     <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js" defer></script>
     <script src="main.js" defer></script>
-    <title>Portfólio</title>
+
+    <title>Victor Oliveira | Portfólio</title>
 </head>
 <body>
     <header>
@@ -18,7 +42,8 @@
                     <img src="assets/img/Logos/logoSemFundo.png" alt="Logo de Victor Oliveira">
                 </a>
             </div>
-            <nav class="menu-desktop">
+
+            <nav class="menu-desktop" aria-label="Menu principal">
                 <ul>
                     <li><a href="#sobre">Sobre</a></li>
                     <li><a href="#projetos">Portfólio</a></li>
@@ -26,25 +51,27 @@
                     <li><a href="#contato">Contato</a></li>
                 </ul>
             </nav>
+
             <button class="btn-abrir-menu" id="btn-menu" aria-label="Abrir menu" aria-expanded="false" aria-controls="menu-mobile">
                 <img src="assets/img/Logos/list.svg" alt="">
             </button>
-            <div class="menu-mobile" id="menu-mobile" aria-label="Menu principal">
+
+            <nav class="menu-mobile" id="menu-mobile" aria-label="Menu principal">
                 <div class="menu-mobile-topo">
                     <span class="menu-mobile-titulo">Victor Oliveira</span>
                     <button class="btn-fechar" id="close" aria-label="Fechar menu">
                         <img src="assets/img/Logos/x-lg.svg" alt="">
                     </button>
                 </div>
-                <nav>
-                    <ul id="list">
-                        <li><a href="#sobre">Sobre</a></li>
-                        <li><a href="#projetos">Portfólio</a></li>
-                        <li><a href="#skills">Skills</a></li>
-                        <li><a href="#contato">Contato</a></li>
-                    </ul>
-                </nav>
-            </div><!--menu-mobile-->
+
+                <ul id="list">
+                    <li><a href="#sobre">Sobre</a></li>
+                    <li><a href="#projetos">Portfólio</a></li>
+                    <li><a href="#skills">Skills</a></li>
+                    <li><a href="#contato">Contato</a></li>
+                </ul>
+            </nav>
+
             <div class="overlay-menu" id="overlay-menu"></div>
         </div>
     </header>

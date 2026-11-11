@@ -1,6 +1,11 @@
 // ============================================================
 // MENU (mobile e destaque da seção atual)
 // ============================================================
+
+// ============================================================
+// MENU (mobile e destaque da seção atual)
+// ============================================================
+
 const botaoAbrir = document.getElementById('btn-menu');
 const botaoFechar = document.getElementById('close');
 const menu = document.getElementById('menu-mobile');
@@ -10,54 +15,43 @@ const linksDoMenu = document.getElementById('list');
 function definirMenuAberto(aberto) {
     menu.classList.toggle('abrir-menu', aberto);
     document.body.classList.toggle('menu-aberto', aberto);
+
     botaoAbrir.setAttribute('aria-expanded', String(aberto));
+
+    if (aberto) {
+        botaoFechar.focus();
+    } else {
+        botaoAbrir.focus();
+    }
 }
 
-const menuEstaAberto = () => menu.classList.contains('abrir-menu');
+function menuEstaAberto() {
+    return menu.classList.contains('abrir-menu');
+}
 
-function abrirMenu() {
+botaoAbrir.addEventListener('click', () => {
     definirMenuAberto(true);
-    botaoFechar.focus();
-}
+});
 
-const fecharMenu = () => definirMenuAberto(false);
+botaoFechar.addEventListener('click', () => {
+    definirMenuAberto(false);
+});
 
-botaoAbrir.addEventListener('click', abrirMenu);
+fundoEscuro.addEventListener('click', () => {
+    definirMenuAberto(false);
+});
 
-[botaoFechar, fundoEscuro, linksDoMenu].forEach(elemento => {
-    elemento.addEventListener('click', fecharMenu);
+linksDoMenu.querySelectorAll('a').forEach(link => {
+    link.addEventListener('click', () => {
+        definirMenuAberto(false);
+    });
 });
 
 document.addEventListener('keydown', evento => {
-    if (evento.key !== 'Escape' || !menuEstaAberto()) return;
-    fecharMenu();
-    botaoAbrir.focus();
+    if (evento.key === 'Escape' && menuEstaAberto()) {
+        definirMenuAberto(false);
+    }
 });
-
-// ----- Destaque da seção que está na tela -----
-const secoes = document.querySelectorAll('main section[id]');
-const linksDeNavegacao = document.querySelectorAll('.menu-desktop a, .menu-mobile a');
-
-function marcarLinkAtivo(idDaSecao) {
-    linksDeNavegacao.forEach(link => {
-        const ehDaSecao = link.getAttribute('href') === `#${idDaSecao}`;
-        if (ehDaSecao) {
-            link.setAttribute('aria-current', 'true');
-        } else {
-            link.removeAttribute('aria-current');
-        }
-    });
-}
-
-// Considera só a faixa do meio da tela
-const observadorDeSecoes = new IntersectionObserver(entradas => {
-    entradas
-        .filter(entrada => entrada.isIntersecting)
-        .forEach(entrada => marcarLinkAtivo(entrada.target.id));
-}, { rootMargin: '-40% 0px -55% 0px' });
-
-secoes.forEach(secao => observadorDeSecoes.observe(secao));
-
 
 // ============================================================
 // CARROSSEL DE PROJETOS DINÂMICO
