@@ -291,9 +291,12 @@ function animar(tempo) {
 
     if (!pausado) {
         if (alvoPos !== null) {
-            pos += (alvoPos - pos) * 0.18;
+            // Transição suave, com resposta mais rápida
+            const diferenca = alvoPos - pos;
 
-            if (Math.abs(alvoPos - pos) < 0.5) {
+            pos += diferenca * 0.16;
+
+            if (Math.abs(diferenca) < 0.5) {
                 pos = alvoPos;
                 alvoPos = null;
             }
@@ -313,9 +316,9 @@ function animar(tempo) {
 
 // Pausa temporariamente a animação após os botões
 function pausarTemporariamente() {
-    pausado = true;
-
     clearTimeout(temporizadorPausa);
+
+    pausado = false;
 
     temporizadorPausa = setTimeout(() => {
         pausado = false;
