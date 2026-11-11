@@ -575,3 +575,18 @@ button:focus-visible{
         gap: 6px;
     }
 }
+/* Acesso discreto à área administrativa */
+.acesso-admin {
+    display: inline-block;
+    margin-left: 5px;
+    color: #777;
+    font-size: 18px;
+    text-decoration: none;
+    opacity: .45;
+    transition: opacity .2s, color .2s;
+}
+
+.acesso-admin:hover {
+    color: var(--azul-claro);
+    opacity: 1;
+}

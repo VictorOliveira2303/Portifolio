@@ -1,0 +1,67 @@
+
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <title>Gerenciar projetos | Portfólio</title>
+
+    <link rel="stylesheet" href="admin.css">
+    <script src="admin.js" defer></script>
+</head>
+<body>
+    <main class="admin-container">
+
+        <a class="voltar" href="../index.html">
+            ← Voltar ao portfólio
+        </a>
+
+        <header class="admin-header">
+            <span class="etiqueta">ÁREA RESTRITA</span>
+            <h1>Gerenciar projetos</h1>
+            <p>Selecione os repositórios que deseja exibir no seu portfólio.</p>
+        </header>
+
+        <section class="painel">
+
+            <div id="estado-login">
+                <h2>Acesso administrativo</h2>
+                <p>Entre com sua conta GitHub autorizada para continuar.</p>
+
+                <button id="btn-login" class="btn-principal">
+                    Entrar com GitHub
+                </button>
+            </div>
+
+            <div id="area-projetos" hidden>
+
+                <div class="usuario">
+                    <span id="usuario-logado"></span>
+                    <button id="btn-sair" class="btn-secundario">Sair</button>
+                </div>
+
+                <div class="lista-cabecalho">
+                    <div>
+                        <h2>Repositórios</h2>
+                        <p>Marque os projetos que deseja publicar.</p>
+                    </div>
+
+                    <span id="contador">0 selecionados</span>
+                </div>
+
+                <div id="lista-repositorios" class="lista-repositorios">
+                    <p>Carregando repositórios...</p>
+                </div>
+
+                <button id="btn-salvar" class="btn-principal">
+                    Salvar projetos selecionados
+                </button>
+            </div>
+
+            <p id="mensagem" role="status" aria-live="polite"></p>
+
+        </section>
+    </main>
+</body>
+</html>
