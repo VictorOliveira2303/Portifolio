@@ -2,7 +2,7 @@
   {
     "id": "appPrevisao",
     "name": "appPrevisao",
-    "description": "",
+    "description": "Aplicação web para consulta das condições climáticas de cidades, utilizando a API da OpenWeatherMap.",
     "languages": [
       "CSS",
       "JavaScript",
@@ -30,7 +30,7 @@
   {
     "id": "comi",
     "name": "comi",
-    "description": "",
+    "description": "O COMI é um projeto front-end que simula um painel de monitoramento de máquinas industriais. A aplicação apresenta informações operacionais, indicadores de desempenho e registros de eventos, proporcionando uma visão gera",
     "languages": [
       "HTML",
       "CSS",
@@ -44,7 +44,7 @@
   {
     "id": "toDo",
     "name": "toDo",
-    "description": "",
+    "description": "Aplicação web desenvolvida para organizar tarefas do dia a dia de maneira simples, intuitiva e prática.",
     "languages": [
       "CSS",
       "JavaScript",
@@ -58,7 +58,7 @@
   {
     "id": "Forms",
     "name": "Forms",
-    "description": "",
+    "description": "Um formulário de inscrição desenvolvido com HTML, CSS e JavaScript, com foco em validação de dados, preenchimento automático de endereço e uma interface moderna e responsiva.",
     "languages": [
       "HTML",
       "CSS",
@@ -72,7 +72,7 @@
   {
     "id": "musica",
     "name": "musica",
-    "description": "",
+    "description": "Aplicação web que permite pesquisar letras de músicas a partir do nome do artista e do título da canção. O projeto também apresenta dinamicamente a capa do álbum como plano de fundo, proporcionando uma experiência visual",
     "languages": [
       "JavaScript",
       "CSS",
@@ -86,7 +86,7 @@
   {
     "id": "buscaCep",
     "name": "buscaCep",
-    "description": "",
+    "description": "Aplicação web desenvolvida para consultar informações de endereço através do CEP, utilizando a API pública ViaCEP.",
     "languages": [
       "CSS",
       "JavaScript",
