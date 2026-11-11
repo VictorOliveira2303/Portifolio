@@ -1,45 +1,44 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <meta name="description" content="Conheça o portfólio de Victor Oliveira, estudante de Ciência da Computação e desenvolvedor em formação. Confira projetos, habilidades e experiências em desenvolvimento web.">
-
     <meta name="author" content="Victor Oliveira">
     <meta name="robots" content="index, follow">
-
+    <meta name="theme-color" content="#121212">
     <meta property="og:type" content="website">
+    <meta property="og:locale" content="pt_BR">
     <meta property="og:title" content="Victor Oliveira | Portfólio">
     <meta property="og:description" content="Conheça meus projetos, habilidades e minha evolução em desenvolvimento de software.">
     <meta property="og:url" content="https://victoroliveira2303.github.io/Portifolio/">
     <meta property="og:image" content="https://victoroliveira2303.github.io/Portifolio/assets/img/Perfil/perfilFormal.jpg">
-    <meta property="og:locale" content="pt_BR">
-
-    <meta name="theme-color" content="#000000">
-
+    <meta property="og:image:alt" content="Victor Oliveira, estudante de Ciência da Computação">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Victor Oliveira | Portfólio">
+    <meta name="twitter:description" content="Conheça meus projetos e habilidades em desenvolvimento de software.">
+    <meta name="twitter:image" content="https://victoroliveira2303.github.io/Portifolio/assets/img/Perfil/perfilFormal.jpg">
     <link rel="canonical" href="https://victoroliveira2303.github.io/Portifolio/">
-
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
-
     <link rel="stylesheet" href="style.css">
-
-    <link rel="shortcut icon" href="assets/img/Perfil/Icon.jpg" type="image/x-icon">
-
+    <link rel="icon" href="assets/img/Perfil/Icon.jpg" type="image/jpeg">
     <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js" defer></script>
     <script src="main.js" defer></script>
-
     <title>Victor Oliveira | Portfólio</title>
 </head>
+
 <body>
+
+    <a class="skip-link" href="#conteudo">Pular para o conteúdo</a>
+
     <header>
         <div class="interface">
+
             <div class="logo">
-                <a href="#sobre">
-                    <img src="assets/img/Logos/logoSemFundo.png" alt="Logo de Victor Oliveira">
+                <a href="#sobre" aria-label="Voltar ao início do portfólio">
+                    <img src="assets/img/Logos/logoSemFundo.png" alt="Logo de Victor Oliveira" decoding="async">
                 </a>
             </div>
 
@@ -52,191 +51,310 @@
                 </ul>
             </nav>
 
-            <button class="btn-abrir-menu" id="btn-menu" aria-label="Abrir menu" aria-expanded="false" aria-controls="menu-mobile">
+            <button type="button" class="btn-abrir-menu" id="btn-menu" aria-label="Abrir menu" aria-expanded="false"
+                aria-controls="menu-mobile">
                 <img src="assets/img/Logos/list.svg" alt="">
             </button>
 
-            <nav class="menu-mobile" id="menu-mobile" aria-label="Menu principal">
+            <div class="menu-mobile" id="menu-mobile" role="dialog" aria-modal="true" aria-label="Menu de navegação"
+                aria-hidden="true" inert>
+
                 <div class="menu-mobile-topo">
                     <span class="menu-mobile-titulo">Victor Oliveira</span>
-                    <button class="btn-fechar" id="close" aria-label="Fechar menu">
+
+                    <button type="button" class="btn-fechar" id="close" aria-label="Fechar menu">
                         <img src="assets/img/Logos/x-lg.svg" alt="">
                     </button>
                 </div>
 
-                <ul id="list">
-                    <li><a href="#sobre">Sobre</a></li>
-                    <li><a href="#projetos">Portfólio</a></li>
-                    <li><a href="#skills">Skills</a></li>
-                    <li><a href="#contato">Contato</a></li>
-                </ul>
-            </nav>
+                <nav aria-label="Navegação mobile">
+                    <ul id="list">
+                        <li><a href="#sobre">Sobre</a></li>
+                        <li><a href="#projetos">Portfólio</a></li>
+                        <li><a href="#skills">Skills</a></li>
+                        <li><a href="#contato">Contato</a></li>
+                    </ul>
+                </nav>
 
-            <div class="overlay-menu" id="overlay-menu"></div>
+            </div>
+
+            <div class="overlay-menu" id="overlay-menu" aria-hidden="true"></div>
+
         </div>
     </header>
-    <main>
-        <section id="sobre">
-        <h2>Sobre mim</h2>
-        <div class="sobre-conteudo">
-            <img src="assets/img/Perfil/perfilFormal.jpg" alt="Foto de Victor Oliveira" />
-            <div class="sobre-texto">
-            <h1>Victor Oliveira</h1>
-            <p class="subtitulo">Estudante de Ciência da Computação</p>
-            <p>
-                Olá, sou Victor Oliveira, estudante do 2º período de Ciência da
-                Computação na Universidade Tiradentes (Unit), em Aracaju, Sergipe.
-                Estou construindo minha base em programação e desenvolvimento web,
-                praticando com projetos que consomem APIs e criam interfaces. Gosto de
-                ampliar meus conhecimentos, treinar minhas habilidades e construir
-                network com pessoas da área. Busco oportunidades para aprender e
-                crescer na área de tecnologia. Este portfólio reúne meus projetos e
-                mostra minha evolução.
-            </p>
-            <h3>Interesses</h3>
-            <ul>
-                <li>Construir network</li>
-                <li>Ampliar meus conhecimentos</li>
-                <li>Treinar minhas habilidades na prática</li>
-                <li>Desenvolvimento web</li>
-                <li>Programação com C# e banco de dados</li>
-            </ul>
+
+    <main id="conteudo">
+
+        <section id="sobre" aria-labelledby="titulo-sobre">
+
+            <h2 id="titulo-sobre">Sobre mim</h2>
+
+            <div class="sobre-conteudo">
+
+                <img src="assets/img/Perfil/perfilFormal.jpg" alt="Foto de Victor Oliveira" decoding="async">
+
+                <div class="sobre-texto">
+
+                    <h1>Victor Oliveira</h1>
+
+                    <p class="subtitulo">
+                        Estudante de Ciência da Computação
+                    </p>
+
+                    <p>
+                        Olá, sou Victor Oliveira, estudante do 2º período de Ciência da
+                        Computação na Universidade Tiradentes (Unit), em Aracaju, Sergipe.
+                        Estou construindo minha base em programação e desenvolvimento web,
+                        praticando com projetos que consomem APIs e criam interfaces. Gosto de
+                        ampliar meus conhecimentos, treinar minhas habilidades e construir
+                        network com pessoas da área. Busco oportunidades para aprender e
+                        crescer na área de tecnologia. Este portfólio reúne meus projetos e
+                        mostra minha evolução.
+                    </p>
+
+                    <h3>Interesses</h3>
+
+                    <ul>
+                        <li>Construir network</li>
+                        <li>Ampliar meus conhecimentos</li>
+                        <li>Treinar minhas habilidades na prática</li>
+                        <li>Desenvolvimento web</li>
+                        <li>Programação com C# e banco de dados</li>
+                    </ul>
+
+                </div>
+
             </div>
-        </div>
+
         </section>
-        <section id="projetos">
-            <h2>Portfólio</h2>
+
+        <section id="projetos" aria-labelledby="titulo-projetos">
+
+            <h2 id="titulo-projetos">Portfólio</h2>
+
             <div class="carrossel">
-                <button class="carrossel-btn" id="proj-anterior" aria-label="Projeto anterior">&#8249;</button>
-                    <div class="projetos-viewport">
-                        <div
-                            class="projetos-lista"
-                            id="projetos-lista"
-                            role="region"
-                            aria-label="Lista de projetos"
-                            tabindex="0"
-                        ></div>
-                    </div>
-                <button class="carrossel-btn" id="proj-proximo" aria-label="Próximo projeto">&#8250;</button>
+
+                <button type="button" class="carrossel-btn" id="proj-anterior" aria-label="Projeto anterior">
+                    &#8249;
+                </button>
+
+                <div class="projetos-viewport">
+
+                    <div class="projetos-lista" id="projetos-lista" role="region" aria-label="Lista de projetos"
+                        aria-live="off" tabindex="0"></div>
+
+                </div>
+
+                <button type="button" class="carrossel-btn" id="proj-proximo" aria-label="Próximo projeto">
+                    &#8250;
+                </button>
+
             </div>
+
         </section>
-        <section id="skills">
-            <h2>Habilidades</h2>
+
+        <section id="skills" aria-labelledby="titulo-skills">
+
+            <h2 id="titulo-skills">Habilidades</h2>
+
             <ul class="skills-lista">
+
                 <li class="skill">
-                <span class="skill-nome">HTML</span>
-                <div class="skill-barra" role="progressbar"
-                    aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"
-                    aria-label="HTML: 25%">
-                    <div class="skill-nivel" style="width: 25%"></div>
-                </div>
-                <span class="skill-rotulo">Em evolução</span>
+                    <span class="skill-nome">HTML</span>
+
+                    <div class="skill-barra" role="progressbar" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"
+                        aria-label="HTML: 25%">
+                        <div class="skill-nivel" style="width: 25%"></div>
+                    </div>
+
+                    <span class="skill-rotulo">Em evolução</span>
                 </li>
+
                 <li class="skill">
-                <span class="skill-nome">CSS</span>
-                <div class="skill-barra" role="progressbar"
-                    aria-valuenow="10" aria-valuemin="0" aria-valuemax="100"
-                    aria-label="CSS: 10%">
-                    <div class="skill-nivel" style="width: 10%"></div>
-                </div>
-                <span class="skill-rotulo">Iniciante</span>
+                    <span class="skill-nome">CSS</span>
+
+                    <div class="skill-barra" role="progressbar" aria-valuenow="10" aria-valuemin="0" aria-valuemax="100"
+                        aria-label="CSS: 10%">
+                        <div class="skill-nivel" style="width: 10%"></div>
+                    </div>
+
+                    <span class="skill-rotulo">Iniciante</span>
                 </li>
+
                 <li class="skill">
-                <span class="skill-nome">JavaScript</span>
-                <div class="skill-barra" role="progressbar"
-                    aria-valuenow="10" aria-valuemin="0" aria-valuemax="100"
-                    aria-label="JavaScript: 10%">
-                    <div class="skill-nivel" style="width: 10%"></div>
-                </div>
-                <span class="skill-rotulo">Iniciante</span>
+                    <span class="skill-nome">JavaScript</span>
+
+                    <div class="skill-barra" role="progressbar" aria-valuenow="10" aria-valuemin="0" aria-valuemax="100"
+                        aria-label="JavaScript: 10%">
+                        <div class="skill-nivel" style="width: 10%"></div>
+                    </div>
+
+                    <span class="skill-rotulo">Iniciante</span>
                 </li>
+
                 <li class="skill">
-                <span class="skill-nome">C#</span>
-                <div class="skill-barra" role="progressbar"
-                    aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"
-                    aria-label="C#: 25%">
-                    <div class="skill-nivel" style="width: 25%"></div>
-                </div>
-                <span class="skill-rotulo">Em evolução</span>
+                    <span class="skill-nome">C#</span>
+
+                    <div class="skill-barra" role="progressbar" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"
+                        aria-label="C#: 25%">
+                        <div class="skill-nivel" style="width: 25%"></div>
+                    </div>
+
+                    <span class="skill-rotulo">Em evolução</span>
                 </li>
+
                 <li class="skill">
-                <span class="skill-nome">SQL</span>
-                <div class="skill-barra" role="progressbar"
-                    aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"
-                    aria-label="SQL: 25%">
-                    <div class="skill-nivel" style="width: 25%"></div>
-                </div>
-                <span class="skill-rotulo">Em evolução</span>
+                    <span class="skill-nome">SQL</span>
+
+                    <div class="skill-barra" role="progressbar" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"
+                        aria-label="SQL: 25%">
+                        <div class="skill-nivel" style="width: 25%"></div>
+                    </div>
+
+                    <span class="skill-rotulo">Em evolução</span>
                 </li>
 
             </ul>
+
         </section>
-        <section id="contato">
-            <h2>Contato</h2>
+
+        <section id="contato" aria-labelledby="titulo-contato">
+
+            <h2 id="titulo-contato">Contato</h2>
+
             <div class="contato-conteudo">
+
                 <form class="contato-form" id="form-contato" novalidate>
+
                     <div class="campo">
+
                         <label for="nome">Nome</label>
-                        <input type="text" id="nome" name="nome" autocomplete="name" required aria-describedby="erro-nome">
-                        <span class="erro" id="erro-nome" role="alert"></span>
+
+                        <input type="text" id="nome" name="nome" autocomplete="name" minlength="2" maxlength="100"
+                            required aria-describedby="erro-nome">
+
+                        <span class="erro" id="erro-nome"></span>
+
                     </div>
+
                     <div class="campo">
+
                         <label for="email">E-mail</label>
-                        <input type="email" id="email" name="email" autocomplete="email" required aria-describedby="erro-email">
-                        <span class="erro" id="erro-email" role="alert"></span>
+
+                        <input type="email" id="email" name="email" autocomplete="email" maxlength="254" required
+                            aria-describedby="erro-email">
+
+                        <span class="erro" id="erro-email"></span>
+
                     </div>
+
                     <div class="campo">
+
                         <label for="mensagem">Mensagem</label>
-                        <textarea id="mensagem" name="mensagem" required aria-describedby="erro-mensagem"></textarea>
-                        <span class="erro" id="erro-mensagem" role="alert"></span>
+
+                        <textarea id="mensagem" name="mensagem" minlength="10" maxlength="3000" required
+                            aria-describedby="erro-mensagem"></textarea>
+
+                        <span class="erro" id="erro-mensagem"></span>
+
                     </div>
 
-                    <!-- Armadilha para robôs: pessoas não veem nem preenchem este campo -->
-                    <input type="text" name="site" class="campo-oculto" tabindex="-1" autocomplete="off" aria-hidden="true">
+                    <!-- Campo invisível para detectar envios automatizados -->
+                    <div class="campo-oculto" aria-hidden="true">
+                        <label for="site">Não preencha este campo</label>
+                        <input type="text" id="site" name="site" tabindex="-1" autocomplete="off">
+                    </div>
 
-                    <button type="submit" class="btn-enviar">Enviar mensagem</button>
-                    <p class="status-form" id="status-form" role="status"></p>
+                    <button type="submit" class="btn-enviar">
+                        Enviar mensagem
+                    </button>
+
+                    <p class="status-form" id="status-form" role="status" aria-live="polite" aria-atomic="true"></p>
+
                 </form>
+
             </div>
+
         </section>
+
     </main>
+
     <footer>
+
         <div class="interface">
+
             <div class="line-footer">
+
                 <div class="flex">
+
                     <div class="logo-footer">
-                        <img src="assets/img/Logos/logoSemFundo.png" alt="Logo de Victor Oliveira">
+                        <img src="assets/img/Logos/logoSemFundo.png" alt="Logo de Victor Oliveira" loading="lazy"
+                            decoding="async">
                     </div>
+
                     <div class="btn-social">
-                        <a href="https://www.youtube.com/@donosdosistema" target="_blank" rel="noopener noreferrer" aria-label="YouTube">
+
+                        <a href="https://www.youtube.com/@donosdosistema" target="_blank" rel="noopener noreferrer"
+                            aria-label="YouTube">
                             <img src="assets/img/Logos/youtube.svg" alt="">
                         </a>
-                        <a href="https://github.com/VictorOliveira2303" target="_blank" rel="noopener noreferrer" aria-label="GitHub">
+
+                        <a href="https://github.com/VictorOliveira2303" target="_blank" rel="noopener noreferrer"
+                            aria-label="GitHub">
                             <img src="assets/img/Logos/github.svg" alt="">
                         </a>
-                        <a href="https://www.instagram.com/victor_oliveiraaraujo/" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+
+                        <a href="https://www.instagram.com/victor_oliveiraaraujo/" target="_blank"
+                            rel="noopener noreferrer" aria-label="Instagram">
                             <img src="assets/img/Logos/instagram.svg" alt="">
                         </a>
-                        <a href="https://www.linkedin.com/in/victor-oliveira-araujo-396374322/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
+
+                        <a href="https://www.linkedin.com/in/victor-oliveira-araujo-396374322/" target="_blank"
+                            rel="noopener noreferrer" aria-label="LinkedIn">
                             <img src="assets/img/Logos/linkedin.svg" alt="">
                         </a>
-                        <a href="https://www.facebook.com/profile.php?id=100052515433248&mibextid=ZbWKwL" target="_blank" rel="noopener noreferrer" aria-label="Facebook">
+
+                        <a href="https://www.facebook.com/profile.php?id=100052515433248&mibextid=ZbWKwL"
+                            target="_blank" rel="noopener noreferrer" aria-label="Facebook">
                             <img src="assets/img/Logos/facebook.svg" alt="">
                         </a>
+
                     </div>
+
                 </div>
+
             </div>
+
             <div class="line-footer2">
-                <p><img src="assets/img/Logos/envelope-fill.svg" alt=""><a href="mailto:victor.oliveira23.dev@gmail.com">victor.oliveira23.dev@gmail.com</a></p>
+
+                <p>
+                    <img src="assets/img/Logos/envelope-fill.svg" alt="">
+
+                    <a href="mailto:victor.oliveira23.dev@gmail.com">
+                        victor.oliveira23.dev@gmail.com
+                    </a>
+                </p>
+
                 <p class="copyright">
                     Victor Oliveira © 2026. Todos os direitos reservados.
-                    <a href="admin/index.html"
-                    class="acesso-admin"
-                    aria-label="Área administrativa"
-                    title="Área administrativa">·</a>
+
+                    <a href="admin/index.html" class="acesso-admin" aria-label="Área administrativa"
+                        title="Área administrativa">·</a>
                 </p>
+
             </div>
+
         </div>
+
     </footer>
+
+    <noscript>
+        <p class="aviso-javascript">
+            Para visualizar os projetos e utilizar o formulário de contato,
+            habilite o JavaScript no navegador.
+        </p>
+    </noscript>
+
 </body>
+
 </html>

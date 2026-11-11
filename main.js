@@ -1,9 +1,6 @@
-// ============================================================
-// MENU (mobile e destaque da seção atual)
-// ============================================================
 
 // ============================================================
-// MENU (mobile e destaque da seção atual)
+// MENU MOBILE (acessibilidade e gerenciamento de foco)
 // ============================================================
 
 const botaoAbrir = document.getElementById('btn-menu');
@@ -12,46 +9,187 @@ const menu = document.getElementById('menu-mobile');
 const fundoEscuro = document.getElementById('overlay-menu');
 const linksDoMenu = document.getElementById('list');
 
-function definirMenuAberto(aberto) {
-    menu.classList.toggle('abrir-menu', aberto);
-    document.body.classList.toggle('menu-aberto', aberto);
+const elementosDeFundo = [
+    document.querySelector('main'),
+    document.querySelector('footer'),
+    document.querySelector('header .logo'),
+    document.querySelector('header .menu-desktop'),
+    botaoAbrir
+].filter(Boolean);
 
-    botaoAbrir.setAttribute('aria-expanded', String(aberto));
+let estadoOriginalFundo = [];
 
-    if (aberto) {
-        botaoFechar.focus();
-    } else {
-        botaoAbrir.focus();
-    }
+function salvarEstadoFundo() {
+    estadoOriginalFundo = elementosDeFundo.map(elemento => ({
+        elemento,
+        inert: elemento.inert,
+        ariaHidden: elemento.getAttribute('aria-hidden')
+    }));
+}
+
+function bloquearFundo() {
+    salvarEstadoFundo();
+
+    elementosDeFundo.forEach(elemento => {
+        elemento.inert = true;
+        elemento.setAttribute('aria-hidden', 'true');
+    });
+}
+
+function liberarFundo() {
+    estadoOriginalFundo.forEach(({ elemento, inert, ariaHidden }) => {
+        elemento.inert = inert;
+
+        if (ariaHidden === null) {
+            elemento.removeAttribute('aria-hidden');
+        } else {
+            elemento.setAttribute('aria-hidden', ariaHidden);
+        }
+    });
+
+    estadoOriginalFundo = [];
+}
+
+function obterElementosFocaveis() {
+    return Array.from(
+        menu.querySelectorAll(
+            'a[href], button:not([disabled]), input:not([disabled]), ' +
+            'select:not([disabled]), textarea:not([disabled]), ' +
+            '[tabindex]:not([tabindex="-1"])'
+        )
+    ).filter(elemento => {
+        return (
+            !elemento.hidden &&
+            !elemento.closest('[inert]') &&
+            elemento.getAttribute('aria-hidden') !== 'true'
+        );
+    });
 }
 
 function menuEstaAberto() {
-    return menu.classList.contains('abrir-menu');
+    return menu?.classList.contains('abrir-menu') ?? false;
 }
 
-botaoAbrir.addEventListener('click', () => {
-    definirMenuAberto(true);
-});
+function definirMenuAberto(aberto) {
+    if (!menu || !botaoAbrir || !botaoFechar) return;
 
-botaoFechar.addEventListener('click', () => {
-    definirMenuAberto(false);
-});
+    if (aberto === menuEstaAberto()) return;
 
-fundoEscuro.addEventListener('click', () => {
-    definirMenuAberto(false);
-});
+    if (aberto) {
+        bloquearFundo();
 
-linksDoMenu.querySelectorAll('a').forEach(link => {
-    link.addEventListener('click', () => {
+        menu.inert = false;
+        menu.setAttribute('aria-hidden', 'false');
+        menu.setAttribute('aria-modal', 'true');
+
+        menu.classList.add('abrir-menu');
+        document.body.classList.add('menu-aberto');
+
+        botaoAbrir.setAttribute('aria-expanded', 'true');
+
+        botaoFechar.focus();
+
+    } else {
+        // Retira o foco do menu antes de ocultá-lo.
+        botaoAbrir.focus();
+
+        menu.classList.remove('abrir-menu');
+        document.body.classList.remove('menu-aberto');
+
+        botaoAbrir.setAttribute('aria-expanded', 'false');
+
+        liberarFundo();
+
+        menu.setAttribute('aria-modal', 'false');
+        menu.setAttribute('aria-hidden', 'true');
+        menu.inert = true;
+    }
+}
+
+if (botaoAbrir && botaoFechar && menu && fundoEscuro && linksDoMenu) {
+
+    // Estado inicial
+    menu.inert = true;
+    menu.setAttribute('aria-hidden', 'true');
+    menu.setAttribute('aria-modal', 'false');
+
+    botaoAbrir.setAttribute('aria-expanded', 'false');
+
+    botaoAbrir.addEventListener('click', () => {
+        definirMenuAberto(true);
+    });
+
+    botaoFechar.addEventListener('click', () => {
         definirMenuAberto(false);
     });
-});
 
-document.addEventListener('keydown', evento => {
-    if (evento.key === 'Escape' && menuEstaAberto()) {
+    fundoEscuro.addEventListener('click', () => {
         definirMenuAberto(false);
-    }
-});
+    });
+
+    linksDoMenu.querySelectorAll('a').forEach(link => {
+        link.addEventListener('click', () => {
+            definirMenuAberto(false);
+        });
+    });
+
+    document.addEventListener('keydown', evento => {
+        if (!menuEstaAberto()) return;
+
+        // Fechar com Escape
+        if (evento.key === 'Escape') {
+            evento.preventDefault();
+            definirMenuAberto(false);
+            return;
+        }
+
+        // Gerenciamento de foco
+        if (evento.key === 'Tab') {
+            const elementos = obterElementosFocaveis();
+
+            if (elementos.length === 0) {
+                evento.preventDefault();
+                botaoFechar.focus();
+                return;
+            }
+
+            const primeiro = elementos[0];
+            const ultimo = elementos[elementos.length - 1];
+
+            // Recupera o foco se ele escapar do menu
+            if (!menu.contains(document.activeElement)) {
+                evento.preventDefault();
+
+                if (evento.shiftKey) {
+                    ultimo.focus();
+                } else {
+                    primeiro.focus();
+                }
+
+                return;
+            }
+
+            // Navegação reversa
+            if (
+                evento.shiftKey &&
+                document.activeElement === primeiro
+            ) {
+                evento.preventDefault();
+                ultimo.focus();
+            }
+
+            // Navegação normal
+            else if (
+                !evento.shiftKey &&
+                document.activeElement === ultimo
+            ) {
+                evento.preventDefault();
+                primeiro.focus();
+            }
+        }
+    });
+}
+
 
 // ============================================================
 // CARROSSEL DE PROJETOS DINÂMICO
@@ -60,6 +198,7 @@ document.addEventListener('keydown', evento => {
 const carrossel = document.getElementById('projetos-lista');
 const areaCarrossel = document.querySelector('.carrossel');
 const viewportCarrossel = document.querySelector('.projetos-viewport');
+
 const btnAnterior = document.getElementById('proj-anterior');
 const btnProximo = document.getElementById('proj-proximo');
 
@@ -67,13 +206,45 @@ let cardsOriginais = [];
 let largura = 0;
 let pos = 0;
 let posInicial = 0;
-let velocidade = 0.5;
+
+const velocidade = 0.5;
+
 let pausado = false;
 let alvoPos = null;
 let ultimoTempo = 0;
-let temporizadorPausa;
+
+const movimentoReduzido = window.matchMedia(
+    '(prefers-reduced-motion: reduce)'
+);
+
+// Validação de URLs
+function validarUrl(url) {
+    try {
+        if (typeof url !== 'string' || !url.trim()) {
+            return null;
+        }
+
+        const endereco = new URL(url);
+
+        if (endereco.protocol !== 'https:') {
+            return null;
+        }
+
+        return endereco.href;
+
+    } catch {
+        return null;
+    }
+}
+
+
+// ============================================================
+// CARREGAMENTO DOS PROJETOS
+// ============================================================
 
 async function carregarProjetos() {
+    if (!carrossel) return;
+
     try {
         const resposta = await fetch('./projects.json', {
             cache: 'no-store'
@@ -95,47 +266,75 @@ async function carregarProjetos() {
             const card = document.createElement('article');
             card.className = 'card-projeto';
 
-            const nome = projeto.name || projeto.id || 'Projeto';
+            const nome = typeof projeto.name === 'string'
+                ? projeto.name
+                : projeto.id || 'Projeto';
 
-            const descricao = projeto.description?.trim()
-                || 'Acesse o projeto para conhecer mais.';
+            const descricao = typeof projeto.description === 'string'
+                ? projeto.description.trim()
+                : '';
 
             const linguagens = Array.isArray(projeto.languages)
-                ? projeto.languages
+                ? projeto.languages.filter(
+                    linguagem => typeof linguagem === 'string'
+                )
                 : [];
 
-            // Imagem e link do projeto
-            const linkImagem = document.createElement('a');
-            linkImagem.href = validarUrl(projeto.projectUrl);
-            linkImagem.target = '_blank';
-            linkImagem.rel = 'noopener noreferrer';
-            linkImagem.setAttribute('aria-label', `Abrir ${nome}`);
+            const urlImagem = validarUrl(projeto.imageUrl);
+            const urlProjeto = validarUrl(projeto.projectUrl);
 
-            const imagem = document.createElement('img');
-            imagem.src = validarUrl(projeto.imageUrl);
-            imagem.alt = `Imagem de demonstração do projeto ${nome}`;
-            imagem.loading = 'lazy';
+            // Imagem
+            if (urlImagem) {
+                const imagem = document.createElement('img');
 
-            linkImagem.appendChild(imagem);
-            card.appendChild(linkImagem);
+                imagem.src = urlImagem;
+                imagem.alt = `Imagem de demonstração do projeto ${nome}`;
+                imagem.loading = 'lazy';
+                imagem.decoding = 'async';
 
-            // Nome
+                if (urlProjeto) {
+                    const linkImagem = document.createElement('a');
+
+                    linkImagem.href = urlProjeto;
+                    linkImagem.target = '_blank';
+                    linkImagem.rel = 'noopener noreferrer';
+
+                    linkImagem.setAttribute(
+                        'aria-label',
+                        `Abrir projeto ${nome}`
+                    );
+
+                    linkImagem.appendChild(imagem);
+                    card.appendChild(linkImagem);
+
+                } else {
+                    card.appendChild(imagem);
+                }
+            }
+
+            // Título
             const titulo = document.createElement('h3');
             titulo.textContent = nome;
+
             card.appendChild(titulo);
 
             // Descrição
             const texto = document.createElement('p');
-            texto.textContent = descricao;
+
+            texto.textContent = descricao ||
+                'Acesse o projeto para conhecer mais.';
+
             card.appendChild(texto);
 
-            // Linguagens
+            // Tecnologias
             if (linguagens.length > 0) {
                 const lista = document.createElement('ul');
+
                 lista.className = 'tecnologias';
 
                 linguagens.forEach(linguagem => {
                     const item = document.createElement('li');
+
                     item.textContent = linguagem;
                     lista.appendChild(item);
                 });
@@ -143,15 +342,21 @@ async function carregarProjetos() {
                 card.appendChild(lista);
             }
 
-            // Repositório GitHub
-            const linkRepositorio = document.createElement('a');
-            linkRepositorio.className = 'link-repositorio';
-            linkRepositorio.href = validarUrl(projeto.repoUrl);
-            linkRepositorio.target = '_blank';
-            linkRepositorio.rel = 'noopener noreferrer';
-            linkRepositorio.textContent = 'Ver repositório no GitHub';
+            // Repositório
+            const urlRepositorio = validarUrl(projeto.repoUrl);
 
-            card.appendChild(linkRepositorio);
+            if (urlRepositorio) {
+                const linkRepositorio = document.createElement('a');
+
+                linkRepositorio.className = 'link-repositorio';
+                linkRepositorio.href = urlRepositorio;
+                linkRepositorio.target = '_blank';
+                linkRepositorio.rel = 'noopener noreferrer';
+
+                linkRepositorio.textContent = 'Ver repositório no GitHub';
+
+                card.appendChild(linkRepositorio);
+            }
 
             fragmento.appendChild(card);
         });
@@ -160,36 +365,43 @@ async function carregarProjetos() {
 
     } catch (erro) {
         console.error('Erro ao carregar projetos:', erro);
+
+        const mensagem = document.createElement('p');
+
+        mensagem.textContent =
+            'Não foi possível carregar os projetos no momento.';
+
+        mensagem.setAttribute('role', 'alert');
+
+        carrossel.replaceChildren(mensagem);
     }
 }
 
-// Validação de URLs
-function validarUrl(url) {
-    try {
-        const endereco = new URL(url);
 
-        if (endereco.protocol !== 'https:') {
-            return '#';
-        }
+// ============================================================
+// MONTAGEM E CENTRALIZAÇÃO DO CARROSSEL
+// ============================================================
 
-        return endereco.href;
-    } catch {
-        return '#';
-    }
-}
-
-// Montagem e centralização
 function montarCarrossel() {
+    if (!carrossel || !viewportCarrossel) return;
+
     carrossel.querySelectorAll('.clone').forEach(clone => {
         clone.remove();
     });
 
-    cardsOriginais = Array.from(carrossel.children);
+    cardsOriginais = Array.from(
+        carrossel.children
+    );
 
     if (cardsOriginais.length === 0) return;
 
     const estilo = getComputedStyle(carrossel);
-    const larguraCard = cardsOriginais[0].getBoundingClientRect().width;
+
+    const larguraCard =
+        cardsOriginais[0].getBoundingClientRect().width;
+
+    if (larguraCard <= 0) return;
+
     const espaco = parseFloat(estilo.columnGap) || 0;
 
     largura = larguraCard + espaco;
@@ -199,21 +411,32 @@ function montarCarrossel() {
     // Clones do final
     cardsOriginais.forEach(card => {
         const clone = card.cloneNode(true);
+
         clone.classList.add('clone');
+        clone.setAttribute('aria-hidden', 'true');
+        clone.inert = true;
+
         carrossel.appendChild(clone);
     });
 
     // Clones do início
     cardsOriginais.slice().reverse().forEach(card => {
         const clone = card.cloneNode(true);
+
         clone.classList.add('clone');
+        clone.setAttribute('aria-hidden', 'true');
+        clone.inert = true;
+
         carrossel.insertBefore(clone, carrossel.firstChild);
     });
 
     const larguraVisivel = viewportCarrossel.clientWidth;
-    const centralizacao = (larguraVisivel - larguraCard) / 2;
 
-    posInicial = quantidadeClones * largura - centralizacao;
+    const centralizacao =
+        (larguraVisivel - larguraCard) / 2;
+
+    posInicial =
+        quantidadeClones * largura - centralizacao;
 
     pos = posInicial;
     alvoPos = null;
@@ -223,14 +446,29 @@ function montarCarrossel() {
     atualizarCardAtivo();
 }
 
-// Atualiza a posição do carrossel
+
+// ============================================================
+// ATUALIZAÇÃO DA POSIÇÃO
+// ============================================================
+
 function atualizarPosicao() {
+    if (!carrossel) return;
+
     carrossel.style.transform = `translateX(-${pos}px)`;
 }
 
-// Mantém o movimento infinito
+
+// ============================================================
+// MOVIMENTO INFINITO
+// ============================================================
+
 function normalizar() {
-    const distanciaTotal = largura * cardsOriginais.length;
+    if (cardsOriginais.length === 0 || largura <= 0) {
+        return;
+    }
+
+    const distanciaTotal =
+        largura * cardsOriginais.length;
 
     const limiteInicial = posInicial;
     const limiteFinal = posInicial + distanciaTotal;
@@ -252,17 +490,27 @@ function normalizar() {
     }
 }
 
-// Identifica e destaca o card centralizado
+
+// ============================================================
+// IDENTIFICAÇÃO DO CARD CENTRAL
+// ============================================================
+
 function atualizarCardAtivo() {
-    const centro = viewportCarrossel.getBoundingClientRect().left
-        + viewportCarrossel.clientWidth / 2;
+    if (!viewportCarrossel || !carrossel) return;
+
+    const centro =
+        viewportCarrossel.getBoundingClientRect().left +
+        viewportCarrossel.clientWidth / 2;
 
     let cardCentral = null;
     let menorDistancia = Infinity;
 
     carrossel.querySelectorAll('.card-projeto').forEach(card => {
         const retangulo = card.getBoundingClientRect();
-        const centroCard = retangulo.left + retangulo.width / 2;
+
+        const centroCard =
+            retangulo.left + retangulo.width / 2;
+
         const distancia = Math.abs(centro - centroCard);
 
         if (distancia < menorDistancia) {
@@ -276,16 +524,30 @@ function atualizarCardAtivo() {
     });
 }
 
-// Animação automática
-function animar(tempo) {
-    if (!ultimoTempo) ultimoTempo = tempo;
 
-    const intervalo = Math.min(tempo - ultimoTempo, 32);
+// ============================================================
+// ANIMAÇÃO AUTOMÁTICA
+// ============================================================
+
+function animar(tempo) {
+    if (!ultimoTempo) {
+        ultimoTempo = tempo;
+    }
+
+    const intervalo = Math.min(
+        tempo - ultimoTempo,
+        32
+    );
+
     ultimoTempo = tempo;
 
-    if (!pausado) {
-        if (alvoPos !== null) {
-            // Transição suave, com resposta mais rápida
+    if (alvoPos !== null) {
+
+        if (movimentoReduzido.matches) {
+            pos = alvoPos;
+            alvoPos = null;
+
+        } else {
             const diferenca = alvoPos - pos;
 
             pos += diferenca * 0.16;
@@ -294,13 +556,19 @@ function animar(tempo) {
                 pos = alvoPos;
                 alvoPos = null;
             }
-        } else if (
-            !window.matchMedia('(prefers-reduced-motion: reduce)').matches
-        ) {
-            pos += velocidade * (intervalo / 16.67);
         }
 
         normalizar();
+
+        atualizarPosicao();
+        atualizarCardAtivo();
+
+    } else if (!pausado && !movimentoReduzido.matches) {
+
+        pos += velocidade * (intervalo / 16.67);
+
+        normalizar();
+
         atualizarPosicao();
         atualizarCardAtivo();
     }
@@ -308,180 +576,404 @@ function animar(tempo) {
     requestAnimationFrame(animar);
 }
 
-// Pausa temporariamente a animação após os botões
-function pausarTemporariamente() {
-    clearTimeout(temporizadorPausa);
 
-    pausado = false;
+// ============================================================
+// NAVEGAÇÃO DO CARROSSEL
+// ============================================================
 
-    temporizadorPausa = setTimeout(() => {
+if (btnAnterior && btnProximo && areaCarrossel) {
+
+    btnAnterior.addEventListener('click', () => {
+        if (largura <= 0) return;
+
+        alvoPos = (alvoPos ?? pos) - largura;
+    });
+
+    btnProximo.addEventListener('click', () => {
+        if (largura <= 0) return;
+
+        alvoPos = (alvoPos ?? pos) + largura;
+    });
+
+    // Pausa ao passar o mouse
+    areaCarrossel.addEventListener('mouseenter', () => {
+        pausado = true;
+    });
+
+    areaCarrossel.addEventListener('mouseleave', () => {
         pausado = false;
-    }, 1500);
+    });
+
+    // Pausa durante navegação por teclado
+    areaCarrossel.addEventListener('focusin', () => {
+        pausado = true;
+    });
+
+    areaCarrossel.addEventListener('focusout', evento => {
+        if (!areaCarrossel.contains(evento.relatedTarget)) {
+            pausado = false;
+        }
+    });
+
+    // Pausa durante toque
+    areaCarrossel.addEventListener('touchstart', () => {
+        pausado = true;
+    }, { passive: true });
+
+    areaCarrossel.addEventListener('touchend', () => {
+        pausado = false;
+    });
+
+    areaCarrossel.addEventListener('touchcancel', () => {
+        pausado = false;
+    });
 }
 
-// Navegação
-btnAnterior.addEventListener('click', () => {
-    pausarTemporariamente();
-    alvoPos = pos - largura;
-});
 
-btnProximo.addEventListener('click', () => {
-    pausarTemporariamente();
-    alvoPos = pos + largura;
-});
+// ============================================================
+// REDIMENSIONAMENTO
+// ============================================================
 
-// Pausa ao interagir
-areaCarrossel.addEventListener('mouseenter', () => {
-    pausado = true;
-});
+let temporizadorResize = null;
 
-areaCarrossel.addEventListener('mouseleave', () => {
-    pausado = false;
-});
-
-areaCarrossel.addEventListener('focusin', () => {
-    pausado = true;
-});
-
-areaCarrossel.addEventListener('focusout', evento => {
-    if (!areaCarrossel.contains(evento.relatedTarget)) {
-        pausado = false;
-    }
-});
-
-areaCarrossel.addEventListener('touchstart', () => {
-    pausado = true;
-}, { passive: true });
-
-areaCarrossel.addEventListener('touchend', () => {
-    pausado = false;
-});
-
-// Redimensionamento
 window.addEventListener('resize', () => {
-    montarCarrossel();
+    clearTimeout(temporizadorResize);
+
+    temporizadorResize = setTimeout(() => {
+        montarCarrossel();
+    }, 150);
 });
 
-// Inicialização
+
+// ============================================================
+// INICIALIZAÇÃO DO CARROSSEL
+// ============================================================
+
 async function iniciarCarrossel() {
+    if (!carrossel || !areaCarrossel || !viewportCarrossel) {
+        return;
+    }
+
     await carregarProjetos();
+
     montarCarrossel();
+
     requestAnimationFrame(animar);
 }
 
 iniciarCarrossel();
 
+
 // ============================================================
 // FORMULÁRIO DE CONTATO
 // ============================================================
+
 const EMAILJS = {
     chavePublica: 'ryOeWTB6VHZhkZfsB',
     idDoServico: 'service_l5u1row',
-    idDoModelo: 'template_inyrme9',
+    idDoModelo: 'template_inyrme9'
 };
-const emailjsConfigurado = Object.values(EMAILJS).every(valor => valor !== 'COLE_AQUI');
+
+const emailjsConfigurado = Object.values(EMAILJS).every(valor => {
+    return (
+        typeof valor === 'string' &&
+        valor.trim() !== '' &&
+        valor !== 'COLE_AQUI'
+    );
+});
+
+
+// ============================================================
+// REGRAS DE VALIDAÇÃO
+// ============================================================
 
 const REGRAS = {
     nome: {
-        valido: texto => texto.length >= 2,
-        mensagem: 'Informe seu nome (mínimo de 2 letras).',
+        valido: texto =>
+            texto.length >= 2 && texto.length <= 100,
+
+        mensagem:
+            'Informe seu nome (de 2 a 100 caracteres).'
     },
+
     email: {
-        valido: texto => /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(texto),
-        mensagem: 'Informe um e-mail válido, como nome@exemplo.com.',
+        valido: texto => {
+            return texto.length <= 254 &&
+                /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(texto);
+        },
+
+        mensagem:
+            'Informe um e-mail válido, com até 254 caracteres.'
     },
+
     mensagem: {
-        valido: texto => texto.length >= 10,
-        mensagem: 'Escreva uma mensagem com pelo menos 10 caracteres.',
-    },
+        valido: texto =>
+            texto.length >= 10 && texto.length <= 3000,
+
+        mensagem:
+            'Escreva uma mensagem de 10 a 3000 caracteres.'
+    }
 };
 
-const camposMensagem = document.querySelectorAll("textarea");
-camposMensagem.forEach(campo => {
-    campo.addEventListener('input', () => {
-        campo.style.height = 'auto';
-        campo.style.height = campo.scrollHeight + 'px';
-    });
-});
+
+// ============================================================
+// ELEMENTOS DO FORMULÁRIO
+// ============================================================
 
 const formulario = document.getElementById('form-contato');
-const statusDoFormulario = document.getElementById('status-form');
-const botaoEnviar = formulario.querySelector('.btn-enviar');
-const campos = Object.keys(REGRAS).map(nome => formulario.elements[nome]);
 
-const elementoDeErro = campo => document.getElementById(`erro-${campo.name}`);
+if (formulario) {
 
-function mostrarErro(campo, texto) {
-    campo.setAttribute('aria-invalid', 'true');
-    elementoDeErro(campo).textContent = texto;
-}
+    const statusDoFormulario =
+        document.getElementById('status-form');
 
-function limparErro(campo) {
-    campo.removeAttribute('aria-invalid');
-    elementoDeErro(campo).textContent = '';
-}
+    const botaoEnviar =
+        formulario.querySelector('.btn-enviar');
 
-function validarCampo(campo) {
-    const regra = REGRAS[campo.name];
-    const campoValido = regra.valido(campo.value.trim());
+    const campos = Object.keys(REGRAS)
+        .map(nome => formulario.elements.namedItem(nome))
+        .filter(Boolean);
 
-    if (campoValido) limparErro(campo);
-    else mostrarErro(campo, regra.mensagem);
-
-    return campoValido;
-}
-
-function validarFormulario() {
-    const invalidos = campos.filter(campo => !validarCampo(campo));
-    if (invalidos.length > 0) invalidos[0].focus();
-    return invalidos.length === 0;
-}
-
-const ehRobo = () => formulario.elements.site.value !== '';
-
-function mostrarStatus(texto, tipo) {
-    statusDoFormulario.textContent = texto;
-    statusDoFormulario.dataset.tipo = tipo;
-}
-
-function lerDados() {
-    return {
-        nome: formulario.elements.nome.value.trim(),
-        email: formulario.elements.email.value.trim(),
-        mensagem: formulario.elements.mensagem.value.trim(),
+    const elementoDeErro = campo => {
+        return document.getElementById(`erro-${campo.name}`);
     };
-}
 
-async function enviarMensagem(dados) {
-    if (!emailjsConfigurado) throw new Error('EmailJS ainda não configurado');
-    await emailjs.send(EMAILJS.idDoServico, EMAILJS.idDoModelo, dados, {
-        publicKey: EMAILJS.chavePublica,
-    });
-}
 
-campos.forEach(campo => {
-    campo.addEventListener('blur', () => {
-        if (campo.value !== '') validarCampo(campo);
-    });
-    campo.addEventListener('input', () => {
-        if (campo.hasAttribute('aria-invalid')) validarCampo(campo);
-    });
-});
+    // ========================================================
+    // MENSAGENS DE ERRO
+    // ========================================================
 
-formulario.addEventListener('submit', async evento => {
-    evento.preventDefault();
-    if (ehRobo() || !validarFormulario()) return;
+    function mostrarErro(campo, texto) {
+        campo.setAttribute('aria-invalid', 'true');
 
-    botaoEnviar.disabled = true;
-    mostrarStatus('Enviando...', 'info');
+        const erro = elementoDeErro(campo);
 
-    try {
-        await enviarMensagem(lerDados());
-        formulario.reset();
-        mostrarStatus('Mensagem enviada! Responderei em breve.', 'sucesso');
-    } catch {
-        mostrarStatus('Não foi possível enviar agora. Tente de novo ou escreva para victorqpr121021@gmail.com.', 'erro');
-    } finally {
-        botaoEnviar.disabled = false;
+        if (erro) {
+            erro.textContent = texto;
+            erro.setAttribute('aria-live', 'polite');
+            erro.setAttribute('aria-atomic', 'true');
+        }
     }
-});
+
+    function limparErro(campo) {
+        campo.removeAttribute('aria-invalid');
+
+        const erro = elementoDeErro(campo);
+
+        if (erro) {
+            erro.textContent = '';
+            erro.removeAttribute('role');
+            erro.removeAttribute('aria-live');
+            erro.removeAttribute('aria-atomic');
+        }
+    }
+
+
+    // ========================================================
+    // VALIDAÇÃO INDIVIDUAL
+    // ========================================================
+
+    function validarCampo(campo) {
+        const regra = REGRAS[campo.name];
+
+        if (!regra) return true;
+
+        const valor = campo.value.trim();
+
+        const campoValido = regra.valido(valor);
+
+        if (campoValido) {
+            limparErro(campo);
+        } else {
+            mostrarErro(campo, regra.mensagem);
+        }
+
+        return campoValido;
+    }
+
+
+    // ========================================================
+    // VALIDAÇÃO GERAL
+    // ========================================================
+
+    function validarFormulario() {
+        const invalidos = campos.filter(campo => {
+            return !validarCampo(campo);
+        });
+
+        if (invalidos.length > 0) {
+            invalidos[0].focus();
+            return false;
+        }
+
+        return true;
+    }
+
+
+    // ========================================================
+    // PROTEÇÃO CONTRA ROBÔS (HONEYPOT)
+    // ========================================================
+
+    function ehRobo() {
+        const campoOculto =
+            formulario.elements.namedItem('site');
+
+        return Boolean(
+            campoOculto &&
+            typeof campoOculto.value === 'string' &&
+            campoOculto.value.trim() !== ''
+        );
+    }
+
+
+    // ========================================================
+    // STATUS DO FORMULÁRIO
+    // ========================================================
+
+    function mostrarStatus(texto, tipo) {
+        if (!statusDoFormulario) return;
+
+        statusDoFormulario.textContent = texto;
+        statusDoFormulario.dataset.tipo = tipo;
+    }
+
+
+    // ========================================================
+    // LEITURA DOS DADOS
+    // ========================================================
+
+    function lerDados() {
+        return {
+            nome: formulario.elements.namedItem('nome').value.trim(),
+            email: formulario.elements.namedItem('email').value.trim(),
+            mensagem: formulario.elements.namedItem('mensagem').value.trim()
+        };
+    }
+
+
+    // ========================================================
+    // ENVIO PELO EMAILJS
+    // ========================================================
+
+    async function enviarMensagem(dados) {
+        if (!emailjsConfigurado) {
+            throw new Error('EmailJS ainda não configurado.');
+        }
+
+        if (typeof emailjs === 'undefined') {
+            throw new Error('Biblioteca EmailJS não carregada.');
+        }
+
+        await emailjs.send(
+            EMAILJS.idDoServico,
+            EMAILJS.idDoModelo,
+            dados,
+            {
+                publicKey: EMAILJS.chavePublica
+            }
+        );
+    }
+
+
+    // ========================================================
+    // AJUSTE AUTOMÁTICO DA ALTURA DO TEXTAREA
+    // ========================================================
+
+    formulario.querySelectorAll('textarea').forEach(campo => {
+
+        campo.addEventListener('input', () => {
+            campo.style.height = 'auto';
+            campo.style.height = `${campo.scrollHeight}px`;
+        });
+
+    });
+
+
+    // ========================================================
+    // EVENTOS DE VALIDAÇÃO
+    // ========================================================
+
+    campos.forEach(campo => {
+
+        campo.addEventListener('blur', () => {
+            if (campo.value !== '') {
+                validarCampo(campo);
+            }
+        });
+
+        campo.addEventListener('input', () => {
+            if (campo.hasAttribute('aria-invalid')) {
+                validarCampo(campo);
+            }
+        });
+
+    });
+
+
+    // ========================================================
+    // ENVIO DO FORMULÁRIO
+    // ========================================================
+
+    formulario.addEventListener('submit', async evento => {
+
+        evento.preventDefault();
+
+        if (ehRobo()) return;
+
+        if (!validarFormulario()) {
+            mostrarStatus(
+                'Verifique os campos destacados antes de enviar.',
+                'erro'
+            );
+
+            return;
+        }
+
+        if (!botaoEnviar) return;
+
+        botaoEnviar.disabled = true;
+
+        formulario.setAttribute('aria-busy', 'true');
+
+        mostrarStatus('Enviando mensagem...', 'info');
+
+        try {
+
+            await enviarMensagem(lerDados());
+
+            formulario.reset();
+
+            // Reinicia altura do textarea
+            formulario.querySelectorAll('textarea').forEach(campo => {
+                campo.style.height = 'auto';
+            });
+
+            // Limpa os erros
+            campos.forEach(campo => {
+                limparErro(campo);
+            });
+
+            mostrarStatus(
+                'Mensagem enviada! Responderei em breve.',
+                'sucesso'
+            );
+
+        } catch (erro) {
+
+            console.error('Erro ao enviar formulário:', erro);
+
+            mostrarStatus(
+                'Não foi possível enviar agora. Tente novamente ou escreva para victor.oliveira23.dev@gmail.com.',
+                'erro'
+            );
+
+        } finally {
+
+            botaoEnviar.disabled = false;
+
+            formulario.removeAttribute('aria-busy');
+        }
+
+    });
+
+}
