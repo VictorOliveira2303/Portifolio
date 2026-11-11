@@ -58,160 +58,321 @@ const observadorDeSecoes = new IntersectionObserver(entradas => {
 
 secoes.forEach(secao => observadorDeSecoes.observe(secao));
 
-// ===== Carrossel de projetos =====
+
+// ============================================================
+// CARROSSEL DE PROJETOS DINÂMICO
+// ============================================================
+
 const carrossel = document.getElementById('projetos-lista');
 const areaCarrossel = document.querySelector('.carrossel');
+const viewportCarrossel = document.querySelector('.projetos-viewport');
 const btnAnterior = document.getElementById('proj-anterior');
 const btnProximo = document.getElementById('proj-proximo');
 
-const VELOCIDADE = 40; // pixels por segundo (aumente para ir mais rápido)
-const reduzirMovimento = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+let cardsOriginais = [];
+let largura = 0;
+let pos = 0;
+let posInicial = 0;
+let velocidade = 0.5;
+let pausado = false;
+let alvoPos = null;
+let ultimoTempo = 0;
+let temporizadorPausa;
 
-let largura = 0;  // largura de um conjunto completo de cards (com o gap)
-let base = 0;     // posição de rolagem do 1º card original
-let pos = 0;      // posição atual, com casas decimais
-let rodando = false;
-let emHover = false;
-let emFoco = false;
-let emToque = false;
-let pausadoAte = 0;
-let ultimoQuadro = 0;
-
-// Duplica os cards antes e depois dos originais: é isso que cria o loop sem corte
-function clonar(card) {
-    const clone = card.cloneNode(true);
-    clone.setAttribute('data-clone', '');
-    clone.setAttribute('aria-hidden', 'true');
-    clone.querySelectorAll('a, button').forEach(el => el.setAttribute('tabindex', '-1'));
-    return clone;
-}
-
-// Lê os cards que estiverem na página e monta o carrossel.
-// Funciona com os cards do HTML e, no futuro, com os que vierem do GitHub.
-function montarCarrossel() {
-    carrossel.querySelectorAll('[data-clone]').forEach(c => c.remove());
-    const originais = Array.from(carrossel.querySelectorAll('.card-projeto'));
-    if (originais.length === 0) return;
-
-    const gap = parseFloat(getComputedStyle(carrossel).columnGap) || 0;
-    const primeiro = originais[0];
-    const ultimo = originais[originais.length - 1];
-    largura = ultimo.offsetLeft + ultimo.offsetWidth + gap - primeiro.offsetLeft;
-
-    const copias = Math.ceil(carrossel.clientWidth / largura) + 1;
-    const antes = document.createDocumentFragment();
-    const depois = document.createDocumentFragment();
-    for (let i = 0; i < copias; i++) {
-        originais.forEach(card => {
-            antes.append(clonar(card));
-            depois.append(clonar(card));
+async function carregarProjetos() {
+    try {
+        const resposta = await fetch('./projects.json', {
+            cache: 'no-store'
         });
-    }
-    carrossel.prepend(antes);
-    carrossel.append(depois);
 
-    // Começa com o 1º card original centralizado
-    base = primeiro.offsetLeft - (carrossel.clientWidth - primeiro.offsetWidth) / 2;
-    pos = base;
-    carrossel.scrollLeft = pos;
-    destacarCentro();
-}
+        if (!resposta.ok) {
+            throw new Error('Não foi possível carregar projects.json.');
+        }
 
-// Mantém a posição dentro de um conjunto: o "salto" é invisível porque os conjuntos são iguais
-function normalizar() {
-    if (pos >= base + largura) pos -= largura;
-    else if (pos < base) pos += largura;
-}
+        const projetos = await resposta.json();
 
-// Anima o card mais próximo do centro
-let destacando = false;
-function destacarCentro() {
-    if (destacando) return;
-    destacando = true;
-    requestAnimationFrame(() => {
-        const cards = Array.from(carrossel.querySelectorAll('.card-projeto'));
-        const centro = carrossel.scrollLeft + carrossel.clientWidth / 2;
-        let melhor = null;
-        let menor = Infinity;
-        cards.forEach(card => {
-            const distancia = Math.abs(card.offsetLeft + card.offsetWidth / 2 - centro);
-            if (distancia < menor) {
-                menor = distancia;
-                melhor = card;
+        if (!Array.isArray(projetos) || projetos.length === 0) {
+            throw new Error('A lista de projetos está vazia.');
+        }
+
+        const fragmento = document.createDocumentFragment();
+
+        projetos.forEach(projeto => {
+            const card = document.createElement('article');
+            card.className = 'card-projeto';
+
+            const nome = projeto.name || projeto.id || 'Projeto';
+
+            const descricao = projeto.description?.trim()
+                || 'Acesse o projeto para conhecer mais.';
+
+            const linguagens = Array.isArray(projeto.languages)
+                ? projeto.languages
+                : [];
+
+            // Imagem e link do projeto
+            const linkImagem = document.createElement('a');
+            linkImagem.href = validarUrl(projeto.projectUrl);
+            linkImagem.target = '_blank';
+            linkImagem.rel = 'noopener noreferrer';
+            linkImagem.setAttribute('aria-label', `Abrir ${nome}`);
+
+            const imagem = document.createElement('img');
+            imagem.src = validarUrl(projeto.imageUrl);
+            imagem.alt = `Imagem de demonstração do projeto ${nome}`;
+            imagem.loading = 'lazy';
+
+            linkImagem.appendChild(imagem);
+            card.appendChild(linkImagem);
+
+            // Nome
+            const titulo = document.createElement('h3');
+            titulo.textContent = nome;
+            card.appendChild(titulo);
+
+            // Descrição
+            const texto = document.createElement('p');
+            texto.textContent = descricao;
+            card.appendChild(texto);
+
+            // Linguagens
+            if (linguagens.length > 0) {
+                const lista = document.createElement('ul');
+                lista.className = 'tecnologias';
+
+                linguagens.forEach(linguagem => {
+                    const item = document.createElement('li');
+                    item.textContent = linguagem;
+                    lista.appendChild(item);
+                });
+
+                card.appendChild(lista);
             }
+
+            // Repositório GitHub
+            const linkRepositorio = document.createElement('a');
+            linkRepositorio.className = 'link-repositorio';
+            linkRepositorio.href = validarUrl(projeto.repoUrl);
+            linkRepositorio.target = '_blank';
+            linkRepositorio.rel = 'noopener noreferrer';
+            linkRepositorio.textContent = 'Ver repositório no GitHub';
+
+            card.appendChild(linkRepositorio);
+
+            fragmento.appendChild(card);
         });
-        cards.forEach(card => card.classList.toggle('ativo', card === melhor));
-        destacando = false;
+
+        carrossel.replaceChildren(fragmento);
+
+    } catch (erro) {
+        console.error('Erro ao carregar projetos:', erro);
+    }
+}
+
+// Validação de URLs
+function validarUrl(url) {
+    try {
+        const endereco = new URL(url);
+
+        if (endereco.protocol !== 'https:') {
+            return '#';
+        }
+
+        return endereco.href;
+    } catch {
+        return '#';
+    }
+}
+
+// Montagem e centralização
+function montarCarrossel() {
+    carrossel.querySelectorAll('.clone').forEach(clone => {
+        clone.remove();
+    });
+
+    cardsOriginais = Array.from(carrossel.children);
+
+    if (cardsOriginais.length === 0) return;
+
+    const estilo = getComputedStyle(carrossel);
+    const larguraCard = cardsOriginais[0].getBoundingClientRect().width;
+    const espaco = parseFloat(estilo.columnGap) || 0;
+
+    largura = larguraCard + espaco;
+
+    const quantidadeClones = cardsOriginais.length;
+
+    // Clones do final
+    cardsOriginais.forEach(card => {
+        const clone = card.cloneNode(true);
+        clone.classList.add('clone');
+        carrossel.appendChild(clone);
+    });
+
+    // Clones do início
+    cardsOriginais.slice().reverse().forEach(card => {
+        const clone = card.cloneNode(true);
+        clone.classList.add('clone');
+        carrossel.insertBefore(clone, carrossel.firstChild);
+    });
+
+    const larguraVisivel = viewportCarrossel.clientWidth;
+    const centralizacao = (larguraVisivel - larguraCard) / 2;
+
+    posInicial = quantidadeClones * largura - centralizacao;
+
+    pos = posInicial;
+    alvoPos = null;
+    ultimoTempo = 0;
+
+    atualizarPosicao();
+    atualizarCardAtivo();
+}
+
+// Atualiza a posição do carrossel
+function atualizarPosicao() {
+    carrossel.style.transform = `translateX(-${pos}px)`;
+}
+
+// Mantém o movimento infinito
+function normalizar() {
+    const distanciaTotal = largura * cardsOriginais.length;
+
+    const limiteInicial = posInicial;
+    const limiteFinal = posInicial + distanciaTotal;
+
+    if (pos >= limiteFinal) {
+        pos -= distanciaTotal;
+
+        if (alvoPos !== null) {
+            alvoPos -= distanciaTotal;
+        }
+    }
+
+    if (pos < limiteInicial) {
+        pos += distanciaTotal;
+
+        if (alvoPos !== null) {
+            alvoPos += distanciaTotal;
+        }
+    }
+}
+
+// Identifica e destaca o card centralizado
+function atualizarCardAtivo() {
+    const centro = viewportCarrossel.getBoundingClientRect().left
+        + viewportCarrossel.clientWidth / 2;
+
+    let cardCentral = null;
+    let menorDistancia = Infinity;
+
+    carrossel.querySelectorAll('.card-projeto').forEach(card => {
+        const retangulo = card.getBoundingClientRect();
+        const centroCard = retangulo.left + retangulo.width / 2;
+        const distancia = Math.abs(centro - centroCard);
+
+        if (distancia < menorDistancia) {
+            menorDistancia = distancia;
+            cardCentral = card;
+        }
+    });
+
+    carrossel.querySelectorAll('.card-projeto').forEach(card => {
+        card.classList.toggle('ativo', card === cardCentral);
     });
 }
 
-// Movimento automático
-function animar(agora) {
-    const dt = Math.min(agora - ultimoQuadro, 50);
-    ultimoQuadro = agora;
+// Animação automática
+function animar(tempo) {
+    if (!ultimoTempo) ultimoTempo = tempo;
 
-    const deveRodar = !reduzirMovimento && !emHover && !emFoco && !emToque && agora > pausadoAte;
-    if (deveRodar && !rodando) pos = carrossel.scrollLeft;
-    rodando = deveRodar;
+    const intervalo = Math.min(tempo - ultimoTempo, 32);
+    ultimoTempo = tempo;
 
-    if (rodando) {
-        pos += VELOCIDADE * dt / 1000;
+    if (!pausado) {
+        if (alvoPos !== null) {
+            pos += (alvoPos - pos) * 0.18;
+
+            if (Math.abs(alvoPos - pos) < 0.5) {
+                pos = alvoPos;
+                alvoPos = null;
+            }
+        } else if (
+            !window.matchMedia('(prefers-reduced-motion: reduce)').matches
+        ) {
+            pos += velocidade * (intervalo / 16.67);
+        }
+
         normalizar();
-        carrossel.scrollLeft = pos;
+        atualizarPosicao();
+        atualizarCardAtivo();
     }
+
     requestAnimationFrame(animar);
 }
 
-// Quando o usuário rola manualmente (dedo, roda do mouse, setas), ajusta o loop ao parar
-let timerAjuste;
-carrossel.addEventListener('scroll', () => {
-    destacarCentro();
-    if (rodando) return;
-    clearTimeout(timerAjuste);
-    timerAjuste = setTimeout(() => {
-        pos = carrossel.scrollLeft;
-        const antes = pos;
-        normalizar();
-        if (pos !== antes) carrossel.scrollLeft = pos;
-    }, 150);
+// Pausa temporariamente a animação após os botões
+function pausarTemporariamente() {
+    pausado = true;
+
+    clearTimeout(temporizadorPausa);
+
+    temporizadorPausa = setTimeout(() => {
+        pausado = false;
+    }, 1500);
+}
+
+// Navegação
+btnAnterior.addEventListener('click', () => {
+    pausarTemporariamente();
+    alvoPos = pos - largura;
 });
 
-// Setas
-function passo() {
-    const card = carrossel.querySelector('.card-projeto');
-    const gap = parseFloat(getComputedStyle(carrossel).columnGap) || 0;
-    return card.offsetWidth + gap;
-}
-function mover(direcao) {
-    pausadoAte = performance.now() + 3000;
-    carrossel.scrollBy({ left: direcao * passo(), behavior: reduzirMovimento ? 'auto' : 'smooth' });
-}
-btnProximo.addEventListener('click', () => mover(1));
-btnAnterior.addEventListener('click', () => mover(-1));
+btnProximo.addEventListener('click', () => {
+    pausarTemporariamente();
+    alvoPos = pos + largura;
+});
 
-// Pausas: mouse em cima, foco do teclado e toque
-areaCarrossel.addEventListener('pointerenter', e => { if (e.pointerType === 'mouse') emHover = true; });
-areaCarrossel.addEventListener('pointerleave', e => { if (e.pointerType === 'mouse') emHover = false; });
-areaCarrossel.addEventListener('focusin', e => { emFoco = e.target.matches(':focus-visible'); });
-areaCarrossel.addEventListener('focusout', () => { emFoco = false; });
-areaCarrossel.addEventListener('touchstart', () => { emToque = true; }, { passive: true });
-function fimDoToque() {
-    emToque = false;
-    pausadoAte = performance.now() + 2500;
-}
-areaCarrossel.addEventListener('touchend', fimDoToque);
-areaCarrossel.addEventListener('touchcancel', fimDoToque);
-areaCarrossel.addEventListener('wheel', () => { pausadoAte = performance.now() + 2500; }, { passive: true });
+// Pausa ao interagir
+areaCarrossel.addEventListener('mouseenter', () => {
+    pausado = true;
+});
 
-// Refaz as medidas se a janela mudar de tamanho
-let timerResize;
+areaCarrossel.addEventListener('mouseleave', () => {
+    pausado = false;
+});
+
+areaCarrossel.addEventListener('focusin', () => {
+    pausado = true;
+});
+
+areaCarrossel.addEventListener('focusout', evento => {
+    if (!areaCarrossel.contains(evento.relatedTarget)) {
+        pausado = false;
+    }
+});
+
+areaCarrossel.addEventListener('touchstart', () => {
+    pausado = true;
+}, { passive: true });
+
+areaCarrossel.addEventListener('touchend', () => {
+    pausado = false;
+});
+
+// Redimensionamento
 window.addEventListener('resize', () => {
-    clearTimeout(timerResize);
-    timerResize = setTimeout(montarCarrossel, 200);
+    montarCarrossel();
 });
 
-montarCarrossel();
-requestAnimationFrame(animar);
+// Inicialização
+async function iniciarCarrossel() {
+    await carregarProjetos();
+    montarCarrossel();
+    requestAnimationFrame(animar);
+}
+
+iniciarCarrossel();
 
 // ============================================================
 // FORMULÁRIO DE CONTATO
