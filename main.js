@@ -1,4 +1,75 @@
+// ============================================================
+// TEMA CLARO E ESCURO
+// ============================================================
 
+const botaoTema = document.getElementById('btn-tema');
+const elementoTema = document.documentElement;
+const metaThemeColor = document.querySelector('meta[name="theme-color"]');
+
+const CHAVE_TEMA = 'portfolio-tema';
+
+function obterTemaSalvo() {
+    try {
+        return localStorage.getItem(CHAVE_TEMA) === 'claro'
+            ? 'claro'
+            : 'escuro';
+    } catch (erro) {
+        console.warn('Não foi possível recuperar o tema salvo:', erro);
+        return 'escuro';
+    }
+}
+
+function atualizarTema(tema) {
+    const temaValido = tema === 'claro' ? 'claro' : 'escuro';
+
+    elementoTema.dataset.theme = temaValido;
+
+    if (botaoTema) {
+        const icone = botaoTema.querySelector('span');
+
+        const proximoTema = temaValido === 'escuro'
+            ? 'claro'
+            : 'escuro';
+
+        const rotulo = proximoTema === 'claro'
+            ? 'Ativar tema claro'
+            : 'Ativar tema escuro';
+
+        botaoTema.setAttribute('aria-label', rotulo);
+        botaoTema.setAttribute('title', rotulo);
+
+        if (icone) {
+            icone.textContent = temaValido === 'escuro' ? '☀' : '☾';
+        }
+    }
+
+    if (metaThemeColor) {
+        metaThemeColor.setAttribute(
+            'content',
+            temaValido === 'claro' ? '#f4f6fa' : '#121212'
+        );
+    }
+}
+
+// Aplica o tema salvo.
+atualizarTema(obterTemaSalvo());
+
+// Alterna o tema e salva a preferência.
+if (botaoTema) {
+    botaoTema.addEventListener('click', () => {
+        const novoTema = elementoTema.dataset.theme === 'escuro'
+            ? 'claro'
+            : 'escuro';
+
+        atualizarTema(novoTema);
+
+        try {
+            localStorage.setItem(CHAVE_TEMA, novoTema);
+        } catch (erro) {
+            console.warn('Não foi possível salvar o tema:', erro);
+        }
+    });
+}
 // ============================================================
 // MENU MOBILE (acessibilidade e gerenciamento de foco)
 // ============================================================
@@ -14,7 +85,8 @@ const elementosDeFundo = [
     document.querySelector('footer'),
     document.querySelector('header .logo'),
     document.querySelector('header .menu-desktop'),
-    botaoAbrir
+    botaoAbrir,
+    botaoTema
 ].filter(Boolean);
 
 let estadoOriginalFundo = [];
