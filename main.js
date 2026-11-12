@@ -457,6 +457,25 @@ async function carregarProjetos() {
     }
 }
 
+// ============================================================
+// INICIALIZAÇÃO DO CARROSSEL
+// ============================================================
+
+async function iniciarCarrossel() {
+
+    if (!carrossel || !areaCarrossel || !viewportCarrossel) {
+        return;
+    }
+
+    await carregarProjetos();
+
+    montarCarrossel();
+
+    requestAnimationFrame(animar);
+
+}
+
+iniciarCarrossel();
 
 // ============================================================
 // MONTAGEM E CENTRALIZAÇÃO DO CARROSSEL
