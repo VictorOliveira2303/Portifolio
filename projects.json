@@ -14,20 +14,6 @@
     "defaultBranch": "main"
   },
   {
-    "id": "lampada",
-    "name": "lampada",
-    "description": "Projeto interativo de uma lâmpada desenvolvido com HTML, CSS e JavaScript.",
-    "languages": [
-      "JavaScript",
-      "HTML",
-      "CSS"
-    ],
-    "imageUrl": "https://raw.githubusercontent.com/VictorOliveira2303/lampada/main/Portfolio/preview.png",
-    "projectUrl": "https://victoroliveira2303.github.io/lampada/",
-    "repoUrl": "https://github.com/VictorOliveira2303/lampada",
-    "defaultBranch": "main"
-  },
-  {
     "id": "comi",
     "name": "comi",
     "description": "O COMI é um projeto front-end que simula um painel de monitoramento de máquinas industriais. A aplicação apresenta informações operacionais, indicadores de desempenho e registros de eventos, proporcionando uma visão gera",
