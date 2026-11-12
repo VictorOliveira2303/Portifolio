@@ -284,6 +284,13 @@ const velocidade = 0.5;
 let pausado = false;
 let alvoPos = null;
 let ultimoTempo = 0;
+// Controle de arraste manual
+let ponteiroAtivo = null;
+let inicioArrasteX = 0;
+let posInicioArraste = 0;
+let arrasteIniciado = false;
+let arrasteRealizado = false;
+let bloquearCliqueAposArraste = false;
 
 const movimentoReduzido = window.matchMedia(
     '(prefers-reduced-motion: reduce)'
@@ -363,6 +370,7 @@ async function carregarProjetos() {
                 imagem.alt = `Imagem de demonstração do projeto ${nome}`;
                 imagem.loading = 'lazy';
                 imagem.decoding = 'async';
+                imagem.draggable = false;
 
                 if (urlProjeto) {
                     const linkImagem = document.createElement('a');
@@ -648,24 +656,28 @@ function animar(tempo) {
     requestAnimationFrame(animar);
 }
 
-
 // ============================================================
-// NAVEGAÇÃO DO CARROSSEL
+// NAVEGAÇÃO E ARRASTE MANUAL DO CARROSSEL
 // ============================================================
 
-if (btnAnterior && btnProximo && areaCarrossel) {
+if (areaCarrossel && viewportCarrossel) {
 
-    btnAnterior.addEventListener('click', () => {
-        if (largura <= 0) return;
+    // Navegação pelas setas
+    if (btnAnterior) {
+        btnAnterior.addEventListener('click', () => {
+            if (largura <= 0) return;
 
-        alvoPos = (alvoPos ?? pos) - largura;
-    });
+            alvoPos = (alvoPos ?? pos) - largura;
+        });
+    }
 
-    btnProximo.addEventListener('click', () => {
-        if (largura <= 0) return;
+    if (btnProximo) {
+        btnProximo.addEventListener('click', () => {
+            if (largura <= 0) return;
 
-        alvoPos = (alvoPos ?? pos) + largura;
-    });
+            alvoPos = (alvoPos ?? pos) + largura;
+        });
+    }
 
     // Pausa ao passar o mouse
     areaCarrossel.addEventListener('mouseenter', () => {
@@ -673,7 +685,9 @@ if (btnAnterior && btnProximo && areaCarrossel) {
     });
 
     areaCarrossel.addEventListener('mouseleave', () => {
-        pausado = false;
+        if (ponteiroAtivo === null) {
+            pausado = false;
+        }
     });
 
     // Pausa durante navegação por teclado
@@ -687,54 +701,127 @@ if (btnAnterior && btnProximo && areaCarrossel) {
         }
     });
 
-    // Pausa durante toque
-    areaCarrossel.addEventListener('touchstart', () => {
+    // Início do arraste
+    viewportCarrossel.addEventListener('pointerdown', evento => {
+
+        if (!evento.isPrimary) return;
+        if (evento.pointerType === 'mouse' && evento.button !== 0) return;
+        if (largura <= 0) return;
+
+        ponteiroAtivo = evento.pointerId;
+
+        inicioArrasteX = evento.clientX;
+        posInicioArraste = pos;
+
+        arrasteIniciado = false;
+        arrasteRealizado = false;
+
+        // Interrompe qualquer movimento automático ou anterior
         pausado = true;
-    }, { passive: true });
+        alvoPos = null;
 
-    areaCarrossel.addEventListener('touchend', () => {
-        pausado = false;
+        bloquearCliqueAposArraste = false;
+
     });
 
-    areaCarrossel.addEventListener('touchcancel', () => {
-        pausado = false;
-    });
-}
+    // Movimento do ponteiro
+    window.addEventListener('pointermove', evento => {
 
+        if (ponteiroAtivo !== evento.pointerId) return;
 
-// ============================================================
-// REDIMENSIONAMENTO
-// ============================================================
+        const deslocamento = evento.clientX - inicioArrasteX;
 
-let temporizadorResize = null;
+        // Evita interpretar pequenos movimentos como arraste
+        if (!arrasteIniciado) {
 
-window.addEventListener('resize', () => {
-    clearTimeout(temporizadorResize);
+            if (Math.abs(deslocamento) < 5) return;
 
-    temporizadorResize = setTimeout(() => {
-        montarCarrossel();
-    }, 150);
-});
+            arrasteIniciado = true;
+            arrasteRealizado = true;
 
+            viewportCarrossel.classList.add('arrastando');
 
-// ============================================================
-// INICIALIZAÇÃO DO CARROSSEL
-// ============================================================
+        }
 
-async function iniciarCarrossel() {
-    if (!carrossel || !areaCarrossel || !viewportCarrossel) {
-        return;
+        evento.preventDefault();
+
+        // Movimento acompanha diretamente o mouse ou dedo
+        pos = posInicioArraste - deslocamento;
+
+        normalizar();
+
+        atualizarPosicao();
+        atualizarCardAtivo();
+
+    }, { passive: false });
+
+    // Finalização do arraste
+    function finalizarArraste(evento) {
+
+        if (ponteiroAtivo !== evento.pointerId) return;
+
+        const houveArraste = arrasteIniciado;
+
+        ponteiroAtivo = null;
+
+        arrasteIniciado = false;
+
+        viewportCarrossel.classList.remove('arrastando');
+
+        if (houveArraste && largura > 0) {
+
+            // Alinha o projeto mais próximo do centro
+            normalizar();
+
+            const distancia = pos - posInicial;
+
+            const indice = Math.round(distancia / largura);
+
+            alvoPos = posInicial + indice * largura;
+
+            normalizar();
+
+            bloquearCliqueAposArraste = true;
+
+            // Evita abrir links acidentalmente após arrastar
+            setTimeout(() => {
+                bloquearCliqueAposArraste = false;
+            }, 0);
+
+        }
+
+        // Retoma o movimento quando apropriado
+        if (evento.pointerType === 'touch') {
+
+            pausado = areaCarrossel.contains(document.activeElement);
+
+        } else {
+
+            pausado =
+                areaCarrossel.matches(':hover') ||
+                areaCarrossel.contains(document.activeElement);
+
+        }
+
     }
 
-    await carregarProjetos();
+    window.addEventListener('pointerup', finalizarArraste);
+    window.addEventListener('pointercancel', finalizarArraste);
 
-    montarCarrossel();
+    // Impede cliques acidentais depois de arrastar
+    document.addEventListener('click', evento => {
 
-    requestAnimationFrame(animar);
+        if (!bloquearCliqueAposArraste) return;
+
+        evento.preventDefault();
+        evento.stopPropagation();
+        evento.stopImmediatePropagation();
+
+        bloquearCliqueAposArraste = false;
+
+    }, true);
+
 }
-
-iniciarCarrossel();
-
 
 // ============================================================
 // FORMULÁRIO DE CONTATO

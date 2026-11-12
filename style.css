@@ -521,16 +521,11 @@ body.menu-aberto {
 
 .projetos-viewport {
     position: relative;
-
     flex: 1;
     min-width: 0;
-
     overflow: hidden;
-
     padding: 28px 10px;
-
     scrollbar-width: none;
-
     mask-image: linear-gradient(
         to right,
         transparent,
@@ -538,6 +533,16 @@ body.menu-aberto {
         #000 94%,
         transparent
     );
+    /* Permite arraste horizontal sem bloquear a rolagem vertical */
+    touch-action: pan-y;
+    cursor: grab;
+}
+
+/* Estado visual durante o arraste */
+.projetos-viewport.arrastando {
+    cursor: grabbing;
+    user-select: none;
+    -webkit-user-select: none;
 }
 
 .projetos-lista {
