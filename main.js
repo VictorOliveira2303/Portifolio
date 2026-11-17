@@ -433,7 +433,7 @@ async function carregarProjetos() {
             fragmento.appendChild(card);
         });
 
-        carrossel.replaceChildren(fragmento);
+        carrossel.appendChild(fragmento);
 
     } catch (erro) {
         console.error('Erro ao carregar projetos:', erro);
@@ -445,7 +445,7 @@ async function carregarProjetos() {
 
         mensagem.setAttribute('role', 'alert');
 
-        carrossel.replaceChildren(mensagem);
+        carrossel.appendChild(mensagem);
     }
 }
 
