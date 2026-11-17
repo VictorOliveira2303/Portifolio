@@ -28,20 +28,6 @@
     "defaultBranch": "main"
   },
   {
-    "id": "toDo",
-    "name": "toDo",
-    "description": "Aplicação web desenvolvida para organizar tarefas do dia a dia de maneira simples, intuitiva e prática.",
-    "languages": [
-      "CSS",
-      "JavaScript",
-      "HTML"
-    ],
-    "imageUrl": "https://raw.githubusercontent.com/VictorOliveira2303/toDo/main/Portfolio/preview.png",
-    "projectUrl": "https://victoroliveira2303.github.io/toDo/",
-    "repoUrl": "https://github.com/VictorOliveira2303/toDo",
-    "defaultBranch": "main"
-  },
-  {
     "id": "Forms",
     "name": "Forms",
     "description": "Um formulário de inscrição desenvolvido com HTML, CSS e JavaScript, com foco em validação de dados, preenchimento automático de endereço e uma interface moderna e responsiva.",
